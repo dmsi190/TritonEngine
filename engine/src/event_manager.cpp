@@ -5,6 +5,7 @@
 #include "application.hpp"
 #include "gameobject_manager.hpp"
 #include "event_manager.hpp"
+#include "buffer.hpp"
 
 namespace realware
 {
@@ -18,16 +19,16 @@ namespace realware
         {
         }
 
-        void cEvent::Invoke(sEventData* const data)
+        void cEvent::Invoke(cBuffer* const data)
         {
             _function(data);
         };
 
-        mEventManager::mEventManager(const cApplication* const app) : _app((cApplication*)app)
+        mEvent::mEvent(const cApplication* const app) : _app((cApplication*)app)
         {
         }
 
-        void mEventManager::Subscribe(const cGameObject* receiver, cEvent& event)
+        void mEvent::Subscribe(const cGameObject* receiver, cEvent& event)
         {
             event._receiver = (cGameObject*)receiver;
 
@@ -38,7 +39,7 @@ namespace realware
             _listeners[eventType].push_back(event);
         }
 
-        void mEventManager::Unsubscribe(const cGameObject* receiver, cEvent& event)
+        void mEvent::Unsubscribe(const cGameObject* receiver, cEvent& event)
         {
             if (_listeners.find(event.GetType()) == _listeners.end())
                 return;
@@ -55,14 +56,14 @@ namespace realware
             }
         }
 
-        void mEventManager::Send(const eEventType& type)
+        void mEvent::Send(const eEventType& type)
         {
-            sEventData data;
+            cBuffer data;
 
             Send(type, &data);
         }
 
-        void mEventManager::Send(const eEventType& type, sEventData* const data)
+        void mEvent::Send(const eEventType& type, cBuffer* const data)
         {
             for (auto& event : _listeners[type])
                 event.Invoke(data);

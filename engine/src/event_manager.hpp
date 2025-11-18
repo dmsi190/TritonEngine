@@ -21,29 +21,25 @@ namespace realware
 
     namespace utils
     {
+        class cBuffer;
+
         enum class eEventType
         {
             NONE,
             KEY_PRESS
         };
 
-        struct sEventData
-        {
-            types::usize ByteSize = 0;
-            void* Data = nullptr;
-        };
-
-        using EventFunction = std::function<void(sEventData* const data)>;
+        using EventFunction = std::function<void(cBuffer* const data)>;
 
         class cEvent
         {
-            friend class mEventManager;
+            friend class mEvent;
 
         public:
             cEvent(const eEventType& type, const EventFunction& function);
             ~cEvent() = default;
 
-            void Invoke(sEventData* const data);
+            void Invoke(cBuffer* const data);
             inline game::cGameObject* GetReceiver() { return _receiver; }
             inline eEventType GetType() { return _type; }
             inline EventFunction& GetFunction() { return _function; }
@@ -54,16 +50,16 @@ namespace realware
             EventFunction _function;
         };
 
-        class mEventManager
+        class mEvent
         {
         public:
-            explicit mEventManager(const app::cApplication* const app);
-            ~mEventManager() = default;
+            explicit mEvent(const app::cApplication* const app);
+            ~mEvent() = default;
             
             void Subscribe(const game::cGameObject* receiver, cEvent& event);
             void Unsubscribe(const game::cGameObject* receiver, cEvent& event);
             void Send(const eEventType& type);
-            void Send(const eEventType& type, sEventData* const data);
+            void Send(const eEventType& type, cBuffer* const data);
 
         private:
             app::cApplication* _app = nullptr;
