@@ -31,8 +31,8 @@ namespace realware
             ~cTask() = default;
 
             void Run();
-            inline cBuffer* GetData() { return _data; }
-            inline std::shared_ptr<TaskFunction> GetFunction() { return _function; }
+            inline cBuffer* GetData() const { return _data; }
+            inline std::shared_ptr<TaskFunction> GetFunction() const { return _function; }
 
         private:
             cBuffer* _data = nullptr;
