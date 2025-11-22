@@ -221,7 +221,7 @@ namespace realware
         {
             auto& actor = actorsArray[i];
 
-            if (actor.GetType() != eCategory::PHYSICS_ACTOR_DYNAMIC)
+            if (actor.GetActorType() != eCategory::PHYSICS_ACTOR_DYNAMIC)
                 continue;
 
             sTransform* transform = actor.GetGameObject()->GetTransform();

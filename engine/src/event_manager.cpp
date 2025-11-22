@@ -11,7 +11,7 @@ using namespace types;
 
 namespace realware
 {
-    cEvent::cEvent(eEventType type, const EventFunction& function) : _type(type), _function(function)
+    cEvent::cEvent(eEvent type, const EventFunction& function) : _type(type), _function(function)
     {
     }
 
@@ -28,7 +28,7 @@ namespace realware
     {
         event._receiver = (cGameObject*)receiver;
 
-        const eEventType eventType = event.GetType();
+        const eEvent eventType = event.GetEventType();
         const auto listener = _listeners.find(eventType);
         if (listener == _listeners.end())
             _listeners.insert({ eventType, {}});
@@ -37,10 +37,10 @@ namespace realware
 
     void mEvent::Unsubscribe(const cGameObject* receiver, cEvent& event)
     {
-        if (_listeners.find(event.GetType()) == _listeners.end())
+        if (_listeners.find(event.GetEventType()) == _listeners.end())
             return;
 
-        const eEventType eventType = event.GetType();
+        const eEvent eventType = event.GetEventType();
         auto& events = _listeners[eventType];
         for (auto it = events.begin(); it != events.end();)
         {
@@ -52,14 +52,14 @@ namespace realware
         }
     }
 
-    void mEvent::Send(eEventType type)
+    void mEvent::Send(eEvent type)
     {
         cBuffer data;
 
         Send(type, &data);
     }
 
-    void mEvent::Send(eEventType type, cBuffer* data)
+    void mEvent::Send(eEvent type, cBuffer* data)
     {
         for (auto& event : _listeners[type])
             event.Invoke(data);

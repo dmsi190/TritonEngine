@@ -14,7 +14,7 @@ namespace realware
     class cGameObject;
     class cBuffer;
     
-    enum class eEventType
+    enum class eEvent
     {
         NONE,
         KEY_PRESS
@@ -27,17 +27,17 @@ namespace realware
         friend class mEvent;
 
     public:
-        cEvent(eEventType type, const EventFunction& function);
+        cEvent(eEvent type, const EventFunction& function);
         ~cEvent() = default;
 
         void Invoke(cBuffer* data);
         inline cGameObject* GetReceiver() const { return _receiver; }
-        inline eEventType GetType() const { return _type; }
+        inline eEvent GetEventType() const { return _type; }
         inline EventFunction& GetFunction() const { return _function; }
 
     private:
         cGameObject* _receiver = nullptr;
-        eEventType _type = eEventType::NONE;
+        eEvent _type = eEvent::NONE;
         mutable EventFunction _function;
     };
 
@@ -46,14 +46,14 @@ namespace realware
     public:
         explicit mEvent(cApplication* app);
         ~mEvent() = default;
-            
+        
         void Subscribe(const cGameObject* receiver, cEvent& event);
         void Unsubscribe(const cGameObject* receiver, cEvent& event);
-        void Send(eEventType type);
-        void Send(eEventType type, cBuffer* data);
+        void Send(eEvent type);
+        void Send(eEvent type, cBuffer* data);
 
     private:
         cApplication* _app = nullptr;
-        std::unordered_map<eEventType, std::vector<cEvent>> _listeners;
+        std::unordered_map<eEvent, std::vector<cEvent>> _listeners;
     };
 }

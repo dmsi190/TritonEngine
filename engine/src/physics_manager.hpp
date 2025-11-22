@@ -125,7 +125,7 @@ namespace realware
 
         inline cGameObject* GetGameObject() const { return _gameObject; }
         inline physx::PxActor* GetActor() const { return _actor; }
-        inline eCategory GetType() const { return _type; }
+        inline eCategory GetActorType() const { return _type; }
 
     private:
         cGameObject* _gameObject = nullptr;
