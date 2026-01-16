@@ -3,15 +3,19 @@
 #pragma once
 
 #include <string>
-#include <typeinfo>
 #include "log.hpp"
-#include "event_manager.hpp"
+#include "event_types.hpp"
+#include "memory_pool.hpp"
 #include "types.hpp"
 
 namespace realware
 {
 	class cContext;
+	class cDataBuffer;
+	class cGameObject;
 	class cMemoryAllocator;
+	template <typename T>
+	class cFactory;
 
 	using ClassType = std::string;
 
@@ -56,7 +60,8 @@ namespace realware
 	{
 		REALWARE_CLASS(cFactoryObject)
 
-		friend class iFactory;
+		template <typename T>
+		friend class cFactory;
 		friend class cMemoryAllocator;
 
 	public:
@@ -64,10 +69,10 @@ namespace realware
 		virtual ~cFactoryObject() override;
 
 		template <typename... Args>
-		void Subscribe(const std::string& id, eEventType type, Args... args);
+		void Subscribe(const std::string& id, eEventType type, Args&&... args);
 		void Unsubscribe(eEventType type, cGameObject* receiver);
 		void Send(eEventType type);
-		void Send(eEventType type, cBuffer* data);
+		void Send(eEventType type, cDataBuffer* data);
 
 		inline cIdentifier* GetIdentifier() const { return _identifier; }
 
@@ -77,65 +82,59 @@ namespace realware
 		cIdentifier* _identifier = nullptr;
 	};
 
-	class iFactory : public iObject
-	{
-		REALWARE_CLASS(iFactory)
-
-	public:
-		explicit iFactory(cContext* context) : iObject(context) {}
-		virtual ~iFactory() = default;
-
-		virtual iObject* Create() = 0;
-
-		virtual void Destroy(iObject* object) = 0;
-
-	protected:
-		types::usize _counter = 0;
-	};
-
 	template <typename T>
-	class ÒFactory : public iFactory
+	class cFactory : public iObject
 	{
 		REALWARE_CLASS(ÒFactory)
 
 	public:
-		explicit ÒFactory(cContext* context) : iFactory(context) {}
-		virtual ~ÒFactory() = default;
+		explicit cFactory(cContext* context) : iObject(context) {}
+		virtual ~cFactory() = default;
 
-		virtual cFactoryObject* Create() override final;
+		template <typename... Args>
+		T* Create(Args&&... args);
+		void Destroy(T* object);
 
-		virtual void Destroy(iObject* object) override final;
+	private:
+		types::usize _counter = 0;
 	};
 
 	template <typename... Args>
-	void cFactoryObject::Subscribe(const std::string& id, eEventType type, Args... args)
+	void cFactoryObject::Subscribe(const std::string& id, eEventType type, Args&&... args)
 	{
 		const cEventDispatcher* dispatcher = _context->GetSubsystem<cEventDispatcher>();
 		dispatcher->Subscribe<Args>(id, type, std::forward<Args>(args)...);
 	}
 
 	template <typename T>
-	cFactoryObject* ÒFactory<T>::Create()
+	template <typename... Args>
+	T* cFactory<T>::Create(Args&&... args)
 	{
 		if (_counter >= types::K_USIZE_MAX)
 		{
-			Print("Error: can't create object of type!");
+			Print("Error: can't create object of type '" + T::GetType() + "'!");
 
 			return nullptr;
 		}
 		
-		const cMemoryPool<T>* memoryPool = _context->GetMemoryPool<T>(_context);
-		T* object = memoryPool->Allocate();
-		const std::string id = object->GetType() + std::to_string(_counter++);
-		object._identifier = new cIdentifier(id);
+		cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
 
-		return (cFactoryObject*)object;
+		const types::usize objectByteSize = sizeof(T);
+		T* object = (T*)memoryAllocator->Allocate(objectByteSize, 64);
+		new (object) T(std::forward<Args>(args)...);
+		
+		const std::string id = object->GetType() + std::to_string(_counter++);
+		object->_identifier = new cIdentifier(id);
+
+		return object;
 	}
 
 	template <typename T>
-	void ÒFactory<T>::Destroy(iObject* object)
+	void cFactory<T>::Destroy(T* object)
 	{
-		cMemoryPool<T>* memoryPool = _context->GetMemoryPool<T>(_context);
-		memoryPool->Deallocate(object);
+		cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
+
+		object->~T();
+		memoryAllocator->Deallocate(object);
 	}
 }

@@ -7,13 +7,13 @@
 
 namespace realware
 {
-    class cDataBuffer;
-
     class cDataFile : public cFactoryObject
     {
+        REALWARE_CLASS(cDataFile)
+
     public:
-        cDataFile(cContext* context);
-        virtual ~cDataFile() override;
+        explicit cDataFile(cContext* context);
+        virtual ~cDataFile() override final;
 
         void Open(const std::string& path, types::boolean isText);
 
@@ -27,7 +27,7 @@ namespace realware
         explicit cFileSystem(cContext* context);
         ~cFileSystem() = default;
 
-        cDataFile* CreateDataFile(const std::string& filepath, types::boolean isText);
+        cDataFile* CreateDataFile(const std::string& path, types::boolean isText);
         void DestroyDataFile(cDataFile* buffer);
     };
 }

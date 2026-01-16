@@ -24,6 +24,6 @@ namespace realware
 		void SetAPI(API api);
 
 	private:
-		iSoundContext* _context = nullptr;
+		iSoundAPI* _context = nullptr;
 	};
 }

@@ -26,14 +26,18 @@ namespace realware
             return;
 
         auto& events = _listeners[type];
-        for (usize i = 0; i < events->GetElementCount(); i++)
+        auto it = events->begin();
+        while (it != events->end())
         {
-            const cEventHandler* listenerEvent = &events->GetElements()[i];
-            const cGameObject* listenerReceiver = listenerEvent->GetReceiver();
+            const cGameObject* listenerReceiver = it->GetReceiver();
             if (listenerReceiver == receiver)
             {
-                events->Delete(listenerReceiver->GetIdentifier()->GetID());
+                it = events->erase(it);
                 return;
+            }
+            else
+            {
+                ++it;
             }
         }
     }
@@ -51,7 +55,7 @@ namespace realware
             return;
 
         auto& events = _listeners[type];
-        for (usize i = 0; i < events->GetElementCount(); i++)
-            events->GetElements()[i].Invoke(data);
+        for (usize i = 0; i < events->size(); i++)
+            events->data()[i].Invoke(data);
     }
 }

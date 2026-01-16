@@ -18,7 +18,6 @@ namespace realware
     class iSoundContext;
     class cRenderer;
     class cFontManager;
-    class cMemoryPool;
     class mCamera;
     class mGameObject;
     class mRender;
@@ -69,12 +68,6 @@ namespace realware
     {
         REALWARE_CLASS(iApplication)
 
-        friend void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-        friend void WindowFocusCallback(GLFWwindow* window, int focused);
-        friend void WindowSizeCallback(GLFWwindow* window, int width, int height);
-        friend void CursorCallback(GLFWwindow* window, double xpos, double ypos);
-        friend void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods);
-
     public:
         enum class eMouseButton
         {
@@ -108,21 +101,8 @@ namespace realware
         inline glm::vec2 GetWindowSize() const { return glm::vec2(_desc._windowDesc._width, _desc._windowDesc._height); }
         inline const std::string& GetWindowTitle() const { return _desc._windowDesc._title; }
         inline const HWND& GetWindowHWND() const { return glfwGetWin32Window((GLFWwindow*)_window); }
-        inline types::boolean GetKey(int key) const { return _keys[key]; }
-        inline types::boolean GetMouseKey(int key) const { return _mouseKeys[key]; }
         types::f32 GetDeltaTime() const { return _deltaTime; }
         sApplicationDescriptor* GetDesc() const { return &_desc; }
-
-    private:
-        static constexpr types::usize K_MAX_KEY_COUNT = 256;
-        static constexpr types::usize K_KEY_BUFFER_MASK = 0xFF;
-
-        inline types::boolean GetWindowFocus() const { return _isFocused; }
-
-        inline void SetKey(const int key, types::boolean value) { _keys[key] = value; }
-        inline void SetMouseKey(const int key, types::boolean value) { _mouseKeys[key] = value; }
-        inline void SetWindowFocus(types::boolean value) { _isFocused = value; }
-        inline void SetCursorPosition(const glm::vec2& cursorPosition) { _cursorPosition = cursorPosition; }
 
     protected:
         mutable sApplicationDescriptor _desc = {};
@@ -139,13 +119,10 @@ namespace realware
         mGameObject* _gameObject = nullptr;
         mEvent* _event = nullptr;
         mThread* _thread = nullptr;
-        types::s32 _keys[K_MAX_KEY_COUNT] = {};
-        types::s32 _mouseKeys[3] = {};
         types::f32 _deltaTime = 0.0;
         std::chrono::steady_clock::time_point _timepointLast;
         types::boolean _isFocused = types::K_FALSE;
         glm::vec2 _cursorPosition = glm::vec2(0.0f);
-        
         std::shared_ptr<cEngine> _engine;
     };
 }

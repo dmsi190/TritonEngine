@@ -37,10 +37,10 @@ namespace realware
         _error(new cPhysicsError()),
         _cpuDispatcher(new cPhysicsCPUDispatcher()),
         _simulationEvent(new cPhysicsSimulationEvent()),
-        _scenes(app),
-        _substances(app),
-        _actors(app),
-        _controllers(app)
+        _scenes(context),
+        _substances(context),
+        _actors(context),
+        _controllers(context)
     {
         _foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *_allocator, *_error);
         if (_foundation == nullptr)

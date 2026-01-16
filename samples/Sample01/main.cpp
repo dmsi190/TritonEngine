@@ -141,7 +141,7 @@ public:
         return renderContext->CreateRenderPass(renderPassDesc);
     }
 
-    virtual void Start() override final
+    virtual void Setup() override final
     {
         // Create custom render pass
         _customRenderPass = CreateCustomRenderPass();
@@ -278,7 +278,7 @@ public:
         );
     }
 
-    virtual void Finish() override final
+    virtual void Stop() override final
     {
     }
 
@@ -307,7 +307,7 @@ int main()
     appDesc->_maxRenderOpaqueInstanceCount = 100 * 50 * 50;
 
     cContext* context = new cContext();
-    MyApp* app = new MyApp(appDesc);
+    MyApp* app = new MyApp(context);
     app->Run();
     
     delete app;

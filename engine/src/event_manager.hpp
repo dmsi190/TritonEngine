@@ -6,6 +6,7 @@
 #include <queue>
 #include <unordered_map>
 #include <functional>
+#include <vector>
 #include "object.hpp"
 #include "id_vec.hpp"
 #include "types.hpp"
@@ -16,12 +17,6 @@ namespace realware
     class cContext;
     class cGameObject;
     
-    enum class eEventType
-    {
-        NONE,
-        KEY_PRESS
-    };
-
     using EventFunction = std::function<void(cDataBuffer* const data)>;
 
     class cEventHandler
@@ -52,17 +47,17 @@ namespace realware
         virtual ~cEventDispatcher() = default;
 
         template <typename... Args>
-        void Subscribe(const std::string& id, eEventType type, Args... args);
+        void Subscribe(const std::string& id, eEventType type, Args&&... args);
         void Unsubscribe(eEventType type, cGameObject* receiver);
         void Send(eEventType type);
         void Send(eEventType type, cDataBuffer* data);
 
     private:
-        std::unordered_map<eEventType, std::shared_ptr<cIdVector<cEventHandler>>> _listeners;
+        std::unordered_map<eEventType, std::shared_ptr<std::vector<cEventHandler>>> _listeners;
     };
 
     template <typename... Args>
-    void cEventDispatcher::Subscribe(const std::string& id, eEventType type, Args... args)
+    void cEventDispatcher::Subscribe(const std::string& id, eEventType type, Args&&... args)
     {
         const auto listener = _listeners.find(type);
         if (listener == _listeners.end())

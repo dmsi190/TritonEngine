@@ -8,8 +8,7 @@
 
 namespace realware
 {
-	template <typename T>
-	class cMemoryPool;
+	class cMemoryAllocator;
 
 	class cContext
 	{
@@ -19,21 +18,20 @@ namespace realware
 		explicit cContext() = default;
 		~cContext() = default;
 
-		template <typename T>
-		T* Create();
+		template <typename T, typename... Args>
+		T* Create(Args&&... args);
 
 		template <typename T>
 		void Destroy(T* object);
 
-		void CreateMemoryPool();
+		void CreateMemoryAllocator();
 
 		template <typename T>
 		void RegisterFactory();
 
 		void RegisterSubsystem(iObject* object);
 
-		template <typename T>
-		inline cMemoryPool<T>* GetMemoryPool() const;
+		inline cMemoryAllocator* GetMemoryAllocator() const { return _allocator; }
 
 		template <typename T>
 		inline T* GetFactory() const;
@@ -42,18 +40,18 @@ namespace realware
 		inline T* GetSubsystem() const;
 
 	private:
-		std::unordered_map<ClassType, std::shared_ptr<iObject>> _memoryPools;
-		std::unordered_map<ClassType, std::shared_ptr<iFactory>> _factories;
+		cMemoryAllocator* _allocator = nullptr;
+		std::unordered_map<ClassType, std::shared_ptr<iObject>> _factories;
 		std::unordered_map<ClassType, std::shared_ptr<iObject>> _subsystems;
 	};
 
-	template <typename T>
-	T* cContext::Create()
+	template <typename T, typename... Args>
+	T* cContext::Create(Args&&... args)
 	{
 		const ClassType type = T::GetType();
 		const auto it = _factories.find(type);
 		if (it != _factories.end())
-			return (T*)_factories[type]->Create();
+			return ((cFactory<T>*)it->second.get())->Create(std::forward<Args>(args)...);
 		else
 			return nullptr;
 	}
@@ -64,7 +62,7 @@ namespace realware
 		const ClassType type = T::GetType();
 		const auto it = _factories.find(type);
 		if (it != _factories.end())
-			_factories[type]->Destroy(object);
+			((cFactory<T>*)it->second.get())->Destroy(object);
 	}
 
 	template <typename T>
@@ -73,18 +71,7 @@ namespace realware
 		const ClassType type = T::GetType();
 		const auto it = _factories.find(type);
 		if (it == _factories.end())
-			_factories.insert({type, std::make_shared<cFactory<T>>(this)});
-	}
-
-	template <typename T>
-	inline cMemoryPool<T>* cContext::GetMemoryPool() const
-	{
-		const ClassType type = T::GetType();
-		const auto it = _memoryPools.find(type);
-		if (it == _memoryPools.end())
-			return _memoryPools[type];
-		else
-			return nullptr;
+			_factories.insert({type, std::make_shared<iObject>(this)});
 	}
 
 	template <typename T>
@@ -93,7 +80,7 @@ namespace realware
 		const ClassType type = T::GetType();
 		const auto it = _factories.find(type);
 		if (it != _factories.end())
-			return _factories[type];
+			return (T*)it->second.get();
 		else
 			return nullptr;
 	}
@@ -104,7 +91,7 @@ namespace realware
 		const ClassType type = T::GetType();
 		const auto it = _subsystems.find(type);
 		if (it != _subsystems.end())
-			return _subsystems[type];
+			return (T*)it->second.get();
 		else
 			return nullptr;
 	}

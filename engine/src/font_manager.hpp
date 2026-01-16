@@ -14,6 +14,7 @@ namespace realware
     class iGraphicsAPI;
     class cApplication;
     class cTexture;
+    class cContext;
 
     struct sGlyph
     {
@@ -29,21 +30,53 @@ namespace realware
         void* _bitmapData = nullptr;
     };
 
-    struct sFont
+    class cFontFace : public cFactoryObject
     {
+        REALWARE_CLASS(cFontFace)
+
+    public:
+        explicit cFontFace(cContext* context);
+        virtual ~cFontFace() override final;
+
+        void FillAlphabetAndFindAtlasSize(types::usize& xOffset, types::usize& atlasWidth, types::usize& atlasHeight);
+        void FillAtlasWithGlyphs(types::usize& atlasWidth, types::usize& atlasHeight);
+
+        inline FT_Face GetFont() const { return _font; }
+        inline types::usize GetGlyphSize() const { return _glyphSize; }
+        inline types::usize GetOffsetNewline() const { return _offsetNewline; }
+        inline types::usize GetOffsetSpace() const { return _offsetSpace; }
+        inline types::usize GetOffsetTab() const { return _offsetTab; }
+        inline std::unordered_map<types::u8, sGlyph>& GetAlphabet() const { return _alphabet; }
+        inline cTexture* GetAtlas() const { return _atlas; }
+        inline void SetGlyphSize(types::usize size) { _glyphSize = size; }
+        inline void SetOffsetNewline(types::usize offset) { _offsetNewline = offset; }
+        inline void SetOffsetSpace(types::usize offset) { _offsetSpace = offset; }
+        inline void SetOffsetTab(types::usize offset) { _offsetTab = offset; }
+
+    private:
         FT_Face _font = {};
         types::usize _glyphCount = 0;
         types::usize _glyphSize = 0;
         types::usize _offsetNewline = 0;
         types::usize _offsetSpace = 0;
         types::usize _offsetTab = 0;
-        std::unordered_map<types::u8, sGlyph> _alphabet = {};
+        mutable std::unordered_map<types::u8, sGlyph> _alphabet = {};
         cTexture* _atlas = nullptr;
     };
 
-    struct sText
+    class cText : public cFactoryObject
     {
-        sFont* _font = nullptr;
+        REALWARE_CLASS(cText)
+
+    public:
+        explicit cText(cContext* context);
+        virtual ~cText() override final;
+
+        inline void SetFont(cFontFace* font) { _font = font; }
+        inline void SetText(const std::string& text) { _text = text; }
+
+    private:
+        cFontFace* _font = nullptr;
         std::string _text = "";
     };
 
@@ -55,13 +88,13 @@ namespace realware
         cFont(cContext* context);
         ~cFont();
 
-        sFont* CreateFontTTF(const std::string& filename, types::usize glyphSize);
-        sText* CreateText(const sFont* font, const std::string& text);
-        void DestroyFontTTF(sFont* font);
-        void DestroyText(sText* text);
+        cFontFace* CreateFontTTF(const std::string& filename, types::usize glyphSize);
+        cText* CreateText(cFontFace* font, const std::string& text);
+        void DestroyFontTTF(cFontFace* font);
+        void DestroyText(cText* text);
             
-        types::f32 GetTextWidth(sFont* font, const std::string& text) const;
-        types::f32 GetTextHeight(sFont* font, const std::string& text) const;
+        types::f32 GetTextWidth(cFontFace* font, const std::string& text) const;
+        types::f32 GetTextHeight(cFontFace* font, const std::string& text) const;
         types::usize GetCharacterCount(const std::string& text) const;
         types::usize GetNewlineCount(const std::string& text) const;
 

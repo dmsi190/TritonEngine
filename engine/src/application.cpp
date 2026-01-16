@@ -1,7 +1,6 @@
 // application.cpp
 
 #include <iostream>
-#include <GLFW/glfw3.h>
 #include "application.hpp"
 #include "graphics.hpp"
 #include "context.hpp"
@@ -18,6 +17,7 @@
 #include "memory_pool.hpp"
 #include "event_manager.hpp"
 #include "thread_manager.hpp"
+#include "input.hpp"
 #include "time.hpp"
 #include "log.hpp"
 
@@ -25,59 +25,6 @@ using namespace types;
 
 namespace realware
 {
-    void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-    {
-        cApplication* app = (cApplication*)glfwGetWindowUserPointer(window);
-        key &= app->K_KEY_BUFFER_MASK;
-
-        if (action == GLFW_PRESS)
-            app->SetKey(key, K_TRUE);
-        else if (action == GLFW_RELEASE)
-            app->SetKey(key, K_FALSE);
-    }
-
-    void WindowFocusCallback(GLFWwindow* window, int focused)
-    {
-        cApplication* app = (cApplication*)glfwGetWindowUserPointer(window);
-
-        if (focused)
-        {
-            if (app->GetWindowFocus() == K_FALSE)
-                app->SetWindowFocus(K_TRUE);
-        }
-        else
-        {
-            app->SetWindowFocus(K_FALSE);
-        }
-    }
-
-    void WindowSizeCallback(GLFWwindow* window, int width, int height)
-    {
-        cApplication* app = (cApplication*)glfwGetWindowUserPointer(window);
-
-        app->_desc._windowDesc._width = width;
-        app->_desc._windowDesc._height = height;
-            
-        app->_render->ResizeWindow(glm::vec2(width, height));
-    }
-
-    void CursorCallback(GLFWwindow* window, double xpos, double ypos)
-    {
-        cApplication* app = (cApplication*)glfwGetWindowUserPointer(window);
-
-        app->SetCursorPosition(glm::vec2(xpos, ypos));
-    }
-
-    void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods)
-    {
-        cApplication* app = (cApplication*)glfwGetWindowUserPointer(window);
-
-        if (action == GLFW_RELEASE)
-            app->SetMouseKey(button, 0);
-        else if (action == GLFW_PRESS)
-            app->SetMouseKey(button, 1);
-    }
-
     iApplication::iApplication(cContext* context) : iObject(context)
     {
         _engine = std::make_shared<cEngine>(_context);
@@ -94,6 +41,7 @@ namespace realware
         Setup();
 
         auto gfx = _context->GetSubsystem<cGraphics>();
+        auto input = _context->GetSubsystem<cInput>();
         auto camera = _context->GetSubsystem<cCamera>();
         auto time = _context->GetSubsystem<cTime>();
         auto physics = _context->GetSubsystem<cPhysics>();
@@ -106,9 +54,8 @@ namespace realware
             physics->Simulate();
             camera->Update();
             gfx->CompositeFinal();
-            gfx->SwapBuffers();
-
-            glfwPollEvents();
+            input->SwapBuffers();
+            input->PollEvents();
         }
 
         time->EndFrame();

@@ -46,9 +46,7 @@ namespace realware
         );
     }
 
-    mGameObject::mGameObject(cContext* context) : iObject(context), _maxGameObjectCount(app->GetDesc()->_maxGameObjectCount), _gameObjects(app)
-    {
-    }
+    mGameObject::mGameObject(cContext* context) : iObject(context), _maxGameObjectCount(app->GetDesc()->_maxGameObjectCount), _gameObjects(app) {}
 
     cGameObject* mGameObject::CreateGameObject(const std::string& id)
     {

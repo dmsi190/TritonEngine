@@ -9,33 +9,11 @@
 #include "object.hpp"
 #include "types.hpp"
 
-struct GLFWwindow;
-
 namespace realware
 {
     class cApplication;
     class cTextureAtlasTexture;
     class cFactoryObject;
-
-    class cWindow : public iObject
-    {
-        REALWARE_CLASS(cWindow)
-
-    public:
-        cWindow(cContext* context) : iObject(context) {}
-        virtual ~cWindow() = default;
-
-        inline GLFWwindow* GetWindow() const { return _window; }
-        inline types::usize GetWidth() const { return _width; }
-        inline types::usize GetHeight() const { return _height; }
-
-        void SetWindow(GLFWwindow* window, types::usize width, types::usize height);
-
-    private:
-        GLFWwindow* _window = nullptr;
-        types::usize _width = 0;
-        types::usize _height = 0;
-    };
 
     class cGPUResource : public cFactoryObject
     {
@@ -230,9 +208,6 @@ namespace realware
         explicit iGraphicsAPI(cContext* context) : iObject(context) {}
         virtual ~iGraphicsAPI() = default;
 
-        virtual cWindow* OpenWindow(const std::string& title, types::usize width, types::usize height, types::usize fullscreen) = 0;
-        virtual glm::vec2 GetMonitorSize() = 0;
-        virtual void SwapBuffers(const cWindow* window) = 0;
         virtual cBuffer* CreateBuffer(types::usize byteSize, cBuffer::eType type, const void* data) = 0;
         virtual void BindBuffer(const cBuffer* buffer) = 0;
 		virtual void BindBufferNotVAO(const cBuffer* buffer) = 0;
@@ -292,9 +267,6 @@ namespace realware
         explicit cOpenGLGraphicsAPI(cContext* context);
         virtual ~cOpenGLGraphicsAPI() override final;
 
-        virtual cWindow* OpenWindow(const std::string& title, types::usize width, types::usize height, types::usize fullscreen) override final;
-        virtual glm::vec2 GetMonitorSize() override final;
-        virtual void SwapBuffers(const cWindow* window) override final;
         virtual cBuffer* CreateBuffer(types::usize byteSize, cBuffer::eType type, const void* data) override final;
         virtual void BindBuffer(const cBuffer* buffer) override final;
         virtual void BindBufferNotVAO(const cBuffer* buffer) override final;

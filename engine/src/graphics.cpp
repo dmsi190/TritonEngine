@@ -81,7 +81,7 @@ namespace realware
         );
     }
 
-    mRender::mRender(cContext* context, iRenderContext* renderContext) : iObject(context), _renderContext(renderContext), _materialsCPU(app)
+    cGraphics::cGraphics(cContext* context) : iObject(context), _materialsCPU(context)
     {
         cMemoryPool* memoryPool = app->GetMemoryPool();
 
@@ -252,8 +252,20 @@ namespace realware
         }
     }
 
-    mRender::~mRender()
+    cGraphics::~cGraphics()
     {
+        if (api == API::NONE)
+        {
+        }
+        else if (api == API::OPENGL)
+        {
+            if (_api)
+                delete _api;
+        }
+        else if (api == API::D3D11)
+        {
+        }
+
         cMemoryPool* memoryPool = GetApplication()->GetMemoryPool();
 
         _renderContext->DestroyBuffer(_vertexBuffer);
@@ -270,7 +282,7 @@ namespace realware
         memoryPool->Free(_opaqueInstances);
     }
 
-    cMaterial* mRender::CreateMaterial(const std::string& id, cTextureAtlasTexture* diffuseTexture, const glm::vec4& diffuseColor, const glm::vec4& highlightColor, eCategory customShaderRenderPath, const std::string& customVertexFuncPath, const std::string& customFragmentFuncPath)
+    cMaterial* cGraphics::CreateMaterial(const std::string& id, cTextureAtlasTexture* diffuseTexture, const glm::vec4& diffuseColor, const glm::vec4& highlightColor, eCategory customShaderRenderPath, const std::string& customVertexFuncPath, const std::string& customFragmentFuncPath)
     {
         sShader* customShader = nullptr;
         if (customVertexFuncPath != "" || customFragmentFuncPath != "")
@@ -288,12 +300,12 @@ namespace realware
         return _materialsCPU.Add(id, diffuseTexture, diffuseColor, highlightColor, customShader);
     }
 
-    cMaterial* mRender::FindMaterial(const std::string& id)
+    cMaterial* cGraphics::FindMaterial(const std::string& id)
     {
         return _materialsCPU.Find(id);
     }
 
-    void mRender::DestroyMaterial(const std::string& id)
+    void cGraphics::DestroyMaterial(const std::string& id)
     {
         cMaterial* material = _materialsCPU.Find(id);
         if (material->GetCustomShader() != nullptr)
@@ -302,7 +314,7 @@ namespace realware
         _materialsCPU.Delete(id);
     }
 
-    sVertexArray* mRender::CreateDefaultVertexArray()
+    sVertexArray* cGraphics::CreateDefaultVertexArray()
     {
         sVertexArray* vertexArray = _renderContext->CreateVertexArray();
         std::vector<sBuffer*> buffersToBind = { _vertexBuffer, _indexBuffer };
@@ -316,7 +328,7 @@ namespace realware
         return vertexArray;
     }
 
-    sVertexBufferGeometry* mRender::CreateGeometry(eCategory format, usize verticesByteSize, const void* vertices, usize indicesByteSize, const void* indices)
+    sVertexBufferGeometry* cGraphics::CreateGeometry(eCategory format, usize verticesByteSize, const void* vertices, usize indicesByteSize, const void* indices)
     {
         sVertexBufferGeometry* pGeometry = (sVertexBufferGeometry*)GetApplication()->GetMemoryPool()->Allocate(sizeof(sVertexBufferGeometry));
         sVertexBufferGeometry* geometry = new (pGeometry) sVertexBufferGeometry();
@@ -355,19 +367,19 @@ namespace realware
         return geometry;
     }
 
-    void mRender::DestroyGeometry(sVertexBufferGeometry* geometry)
+    void cGraphics::DestroyGeometry(sVertexBufferGeometry* geometry)
     {
         geometry->~sVertexBufferGeometry();
         GetApplication()->GetMemoryPool()->Free(geometry);
     }
 
-    void mRender::ClearGeometryBuffer()
+    void cGraphics::ClearGeometryBuffer()
     {
         _verticesByteSize = 0;
         _indicesByteSize = 0;
     }
 
-    void mRender::ClearRenderPass(const sRenderPass* renderPass, types::boolean clearColor, usize bufferIndex, const glm::vec4& color, types::boolean clearDepth, f32 depth)
+    void cGraphics::ClearRenderPass(const sRenderPass* renderPass, types::boolean clearColor, usize bufferIndex, const glm::vec4& color, types::boolean clearDepth, f32 depth)
     {
         _renderContext->BindRenderPass(renderPass);
         if (clearColor == K_TRUE)
@@ -377,7 +389,7 @@ namespace realware
         _renderContext->UnbindRenderPass(renderPass);
     }
 
-    void mRender::ClearRenderPasses(const glm::vec4& clearColor, f32 clearDepth)
+    void cGraphics::ClearRenderPasses(const glm::vec4& clearColor, f32 clearDepth)
     {
         _renderContext->BindRenderPass(_opaque);
         _renderContext->ClearFramebufferColor(0, clearColor);
@@ -391,7 +403,7 @@ namespace realware
         _renderContext->ClearFramebufferColor(0, clearColor);
     }
 
-    void mRender::UpdateLights()
+    void cGraphics::UpdateLights()
     {
         /*_lightsByteSize = 16; // because vec4 (16 bytes) goes first (contains light count)
         memset(_lights, 0, 16 + (sizeof(sLightInstance) * 16));
@@ -416,7 +428,7 @@ namespace realware
         _context->WriteBuffer(_lightBuffer, 0, _lightsByteSize, _lights);*/
     }
 
-    void mRender::WriteObjectsToOpaqueBuffers(cIdVector<cGameObject>& objects, sRenderPass* renderPass)
+    void cGraphics::WriteObjectsToOpaqueBuffers(cIdVector<cGameObject>& objects, sRenderPass* renderPass)
     {
         _opaqueInstanceCount = 0;
         _opaqueInstancesByteSize = 0;
@@ -489,7 +501,7 @@ namespace realware
         _renderContext->WriteBuffer(_opaqueTextureAtlasTexturesBuffer, 0, _opaqueTextureAtlasTexturesByteSize, _opaqueTextureAtlasTextures);
     }
 
-    void mRender::WriteObjectsToTransparentBuffers(cIdVector<cGameObject>& objects, sRenderPass* renderPass)
+    void cGraphics::WriteObjectsToTransparentBuffers(cIdVector<cGameObject>& objects, sRenderPass* renderPass)
     {
         _transparentInstanceCount = 0;
         _transparentInstancesByteSize = 0;
@@ -561,7 +573,7 @@ namespace realware
         _renderContext->WriteBuffer(_transparentTextureAtlasTexturesBuffer, 0, _transparentTextureAtlasTexturesByteSize, _transparentTextureAtlasTextures);
     }
 
-    void mRender::DrawGeometryOpaque(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, sRenderPass* renderPass)
+    void cGraphics::DrawGeometryOpaque(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, sRenderPass* renderPass)
     {
         if (renderPass == nullptr)
         {
@@ -587,7 +599,7 @@ namespace realware
             _renderContext->UnbindRenderPass(renderPass);
     }
 
-    void mRender::DrawGeometryOpaque(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, sShader* singleShader)
+    void cGraphics::DrawGeometryOpaque(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, sShader* singleShader)
     {
         _renderContext->BindRenderPass(_opaque, singleShader);
 
@@ -606,7 +618,7 @@ namespace realware
         _renderContext->UnbindRenderPass(_opaque);
     }
 
-    void mRender::DrawGeometryTransparent(const sVertexBufferGeometry* geometry, const std::vector<cGameObject>& objects, const cGameObject* cameraObject, sRenderPass* renderPass)
+    void cGraphics::DrawGeometryTransparent(const sVertexBufferGeometry* geometry, const std::vector<cGameObject>& objects, const cGameObject* cameraObject, sRenderPass* renderPass)
     {
         if (renderPass == nullptr)
         {
@@ -634,7 +646,7 @@ namespace realware
         CompositeTransparent();
     }
 
-    void mRender::DrawGeometryTransparent(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, sShader* singleShader)
+    void cGraphics::DrawGeometryTransparent(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, sShader* singleShader)
     {
         _renderContext->BindRenderPass(_transparent, singleShader);
 
@@ -653,7 +665,7 @@ namespace realware
         _renderContext->UnbindRenderPass(_transparent);
     }
 
-    void mRender::DrawTexts(const std::vector<cGameObject>& objects)
+    void cGraphics::DrawTexts(const std::vector<cGameObject>& objects)
     {
         for (auto& it : objects)
         {
@@ -739,14 +751,14 @@ namespace realware
         }
     }
 
-    void mRender::CompositeTransparent()
+    void cGraphics::CompositeTransparent()
     {
         _renderContext->BindRenderPass(_compositeTransparent);
         _renderContext->DrawQuad();
         _renderContext->UnbindRenderPass(_compositeTransparent);
     }
 
-    void mRender::CompositeFinal()
+    void cGraphics::CompositeFinal()
     {
         _renderContext->BindRenderPass(_compositeFinal);
         _renderContext->DrawQuad();
@@ -755,7 +767,7 @@ namespace realware
         _renderContext->UnbindShader();
     }
 
-    sPrimitive* mRender::CreatePrimitive(eCategory primitive)
+    sPrimitive* cGraphics::CreatePrimitive(eCategory primitive)
     {
         cApplication* app = GetApplication();
         cMemoryPool* memoryPool = app->GetMemoryPool();
@@ -818,7 +830,7 @@ namespace realware
         return primitiveObject;
     }
 
-    sModel* mRender::CreateModel(const std::string& filename)
+    sModel* cGraphics::CreateModel(const std::string& filename)
     {
         cApplication* app = GetApplication();
         cMemoryPool* memoryPool = app->GetMemoryPool();
@@ -879,7 +891,7 @@ namespace realware
         return model;
     }
 
-    void mRender::DestroyPrimitive(sPrimitive* primitiveObject)
+    void cGraphics::DestroyPrimitive(sPrimitive* primitiveObject)
     {
         cMemoryPool* memoryPool = GetApplication()->GetMemoryPool();
 
@@ -891,7 +903,7 @@ namespace realware
         memoryPool->Free(primitiveObject);
     }
 
-    void mRender::LoadShaderFiles(const std::string& vertexFuncPath, const std::string& fragmentFuncPath, std::string& vertexFunc, std::string& fragmentFunc)
+    void cGraphics::LoadShaderFiles(const std::string& vertexFuncPath, const std::string& fragmentFuncPath, std::string& vertexFunc, std::string& fragmentFunc)
     {
         cApplication* app = GetApplication();
         sFile* vertexFuncFile = app->GetFileSystemManager()->CreateDataFile(vertexFuncPath, K_TRUE);
@@ -902,7 +914,7 @@ namespace realware
         app->GetFileSystemManager()->DestroyDataFile(fragmentFuncFile);
     }
 
-    void mRender::ResizeWindow(const glm::vec2& size)
+    void cGraphics::ResizeRenderTargets(const glm::vec2& size)
     {
         _renderContext->UnbindRenderPass(_opaque);
         _renderContext->UnbindRenderPass(_transparent);
@@ -933,23 +945,6 @@ namespace realware
         _compositeFinal->_desc._inputTextureNames[0] = "ColorTexture";
     }
 
-	cGraphics::cGraphics(cContext* context) : iObject(context) {}
-	
-	cGraphics::~cGraphics()
-	{
-		if (api == API::NONE)
-		{
-		}
-		else if (api == API::OPENGL)
-		{
-			if (_api)
-				delete _api;
-		}
-		else if (api == API::D3D11)
-		{
-		}
-	}
-
 	void cGraphics::SetAPI(API api)
 	{
 		if (api == API::NONE)
@@ -960,17 +955,11 @@ namespace realware
 		}
 		else if (api == API::OPENGL)
 		{
-			_api = new cOpenGLGraphicsAPI(_context);
+			_gfx = new cOpenGLGraphicsAPI(_context);
 		}
 		else if (api == API::D3D11)
 		{
 		}
-	}
-
-	void cGraphics::SetWindow(types::usize width, types::usize height)
-	{
-		if (_api != nullptr)
-			_window = _api->OpenWindow(width, height);
 	}
 
 	void cGraphics::SwapBuffers()

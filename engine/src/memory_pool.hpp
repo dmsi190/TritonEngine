@@ -8,6 +8,8 @@
 
 namespace realware
 {
+	class cContext;
+	
     struct sAllocatorBin
     {
         types::usize _blockSize = 0;
@@ -15,21 +17,20 @@ namespace realware
         void* _blocks = nullptr;
     };
 
-    class cMemoryAllocator : public iObject
+    class cMemoryAllocator
     {
     public:
         static constexpr types::usize MAX_BIN_COUNT = 64 + 1;
         static constexpr types::usize MAX_ALLOCATION_BYTE_SIZE = 32 * 1024;
 
     public:
-        explicit cMemoryAllocator(cContext* context);
+        explicit cMemoryAllocator() = default;
         virtual ~cMemoryAllocator();
 
         void* Allocate(types::usize byteSize, types::usize alignment);
         void Deallocate(void* ptr);
 
-    private:
-        void AllocateBins(types::usize maxBinByteSize);
+        void SetBins(types::usize maxBinByteSize);
 
     private:
         sAllocatorBin* _bins = nullptr;

@@ -7,37 +7,21 @@
 #include "memory_pool.hpp"
 #include "context.hpp"
 #include "graphics.hpp"
+#include "input.hpp"
 #include "log.hpp"
 
 using namespace types;
 
 namespace realware
 {
-    cFont::cFont(cContext* context) : iObject(context), _gfx(context->GetSubsystem<cGraphics>()->GetAPI())
+    usize CalculateNewlineOffset(cFontFace* font)
     {
-        if (FT_Init_FreeType(&_lib))
-        {
-            Print("Failed to initialize FreeType library!");
-            return;
-        }
-
-        _initialized = K_TRUE;
+        return font->GetFont()->size->metrics.height >> 6;
     }
 
-    cFont::~cFont()
+    usize CalculateSpaceOffset(cFontFace* font)
     {
-        if (_initialized)
-            FT_Done_FreeType(_lib);
-    }
-
-    usize CalculateNewlineOffset(sFont* font)
-    {
-        return font->_font->size->metrics.height >> 6;
-    }
-
-    usize CalculateSpaceOffset(sFont* font)
-    {
-        const FT_Face& ftFont = font->_font;
+        const FT_Face ftFont = font->GetFont();
         const FT_UInt spaceIndex = FT_Get_Char_Index(ftFont, ' ');
         if (FT_Load_Glyph(ftFont, spaceIndex, FT_LOAD_DEFAULT) == 0)
             return ftFont->glyph->advance.x >> 6;
@@ -45,9 +29,27 @@ namespace realware
             return 0;
     }
 
-    void FillAlphabetAndFindAtlasSize(cMemoryPool* memoryPool, sFont* font, usize& xOffset, usize& atlasWidth, usize& atlasHeight)
+    cFontFace::cFontFace(cContext* context) : cFactoryObject(context) {}
+
+    cFontFace::~cFontFace()
     {
-        const FT_Face& ftFont = font->_font;
+        cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
+        iGraphicsAPI* gfx = _context->GetSubsystem<cGraphics>()->GetAPI();
+
+        for (const auto& glyph : _alphabet)
+            memoryAllocator->Deallocate(glyph.second._bitmapData);
+        _alphabet.clear();
+
+        gfx->DestroyTexture(_atlas);
+
+        FT_Done_Face(_font);
+    }
+
+    void cFontFace::FillAlphabetAndFindAtlasSize(usize& xOffset, usize& atlasWidth, usize& atlasHeight)
+    {
+        cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
+
+        const FT_Face ftFont = _font;
         usize maxGlyphHeight = 0;
 
         for (usize c = 0; c < 256; c++)
@@ -58,7 +60,7 @@ namespace realware
             const FT_Int ci = FT_Get_Char_Index(ftFont, c);
             if (FT_Load_Glyph(ftFont, (FT_UInt)ci, FT_LOAD_DEFAULT) == 0)
             {
-                font->_glyphCount += 1;
+                _glyphCount += 1;
 
                 FT_Render_Glyph(ftFont->glyph, FT_RENDER_MODE_NORMAL);
 
@@ -70,12 +72,12 @@ namespace realware
                 glyph._top = ftFont->glyph->bitmap_top;
                 glyph._advanceX = ftFont->glyph->advance.x >> 6;
                 glyph._advanceY = ftFont->glyph->advance.y >> 6;
-                glyph._bitmapData = memoryPool->Allocate(glyph._width * glyph._height);
+                glyph._bitmapData = memoryAllocator->Allocate(glyph._width * glyph._height, 64);
 
                 if (ftFont->glyph->bitmap.buffer)
                     memcpy(glyph._bitmapData, ftFont->glyph->bitmap.buffer, glyph._width * glyph._height);
 
-                font->_alphabet.insert({(u8)c, glyph});
+                _alphabet.insert({ (u8)c, glyph });
 
                 xOffset += glyph._width + 1;
 
@@ -96,6 +98,83 @@ namespace realware
 
         if (atlasHeight < maxGlyphHeight + 1)
             atlasHeight += maxGlyphHeight + 1;
+    }
+
+    void cFontFace::FillAtlasWithGlyphs(usize& atlasWidth, usize& atlasHeight)
+    {
+        cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
+        iGraphicsAPI* gfx = _context->GetSubsystem<cGraphics>()->GetAPI();
+
+        usize maxGlyphHeight = 0;
+
+        void* atlasPixels = memoryAllocator->Allocate(atlasWidth * atlasHeight, 64);
+        memset(atlasPixels, 0, atlasWidth * atlasHeight);
+
+        usize xOffset = 0;
+        usize yOffset = 0;
+        u8* pixelsU8 = (u8*)atlasPixels;
+
+        for (auto& glyph : _alphabet)
+        {
+            glyph.second._atlasXOffset = xOffset;
+            glyph.second._atlasYOffset = yOffset;
+
+            for (usize y = 0; y < glyph.second._height; y++)
+            {
+                for (usize x = 0; x < glyph.second._width; x++)
+                {
+                    const usize glyphPixelIndex = x + (y * glyph.second._width);
+                    const usize pixelIndex = (xOffset + x) + ((yOffset + y) * atlasWidth);
+
+                    if (glyphPixelIndex < glyph.second._width * glyph.second._height &&
+                        pixelIndex < atlasWidth * atlasHeight)
+                        pixelsU8[pixelIndex] = ((u8*)glyph.second._bitmapData)[glyphPixelIndex];
+                }
+            }
+
+            xOffset += glyph.second._width + 1;
+            if (glyph.second._height > maxGlyphHeight)
+                maxGlyphHeight = glyph.second._height;
+
+            if (xOffset >= cFont::K_MAX_ATLAS_WIDTH)
+            {
+                yOffset += maxGlyphHeight + 1;
+                xOffset = 0;
+                maxGlyphHeight = 0;
+            }
+        }
+
+        _atlas = gfx->CreateTexture(
+            atlasWidth,
+            atlasHeight,
+            0,
+            cTexture::eType::TEXTURE_2D,
+            cTexture::eFormat::R8,
+            atlasPixels
+        );
+
+        memoryAllocator->Deallocate(atlasPixels);
+    }
+
+    cText::cText(cContext* context) : cFactoryObject(context) {}
+
+    cText::~cText() {}
+
+    cFont::cFont(cContext* context) : iObject(context), _gfx(context->GetSubsystem<cGraphics>()->GetAPI())
+    {
+        if (FT_Init_FreeType(&_lib))
+        {
+            Print("Failed to initialize FreeType library!");
+            return;
+        }
+
+        _initialized = K_TRUE;
+    }
+
+    cFont::~cFont()
+    {
+        if (_initialized)
+            FT_Done_FreeType(_lib);
     }
 
     usize NextPowerOfTwo(usize n)
@@ -121,67 +200,13 @@ namespace realware
         atlasHeight = NextPowerOfTwo(atlasHeight);
     }
 
-    void FillAtlasWithGlyphs(cMemoryPool* memoryPool, sFont* font, usize& atlasWidth, usize& atlasHeight, iRenderContext* context)
+    cFontFace* cFont::CreateFontTTF(const std::string& filename, usize glyphSize)
     {
-        usize maxGlyphHeight = 0;
+        cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
+        iGraphicsAPI* gfx = _context->GetSubsystem<cGraphics>()->GetAPI();
+        cFontFace* font = _context->Create<cFontFace>(_context);
 
-        void* atlasPixels = memoryPool->Allocate(atlasWidth * atlasHeight);
-        memset(atlasPixels, 0, atlasWidth * atlasHeight);
-
-        usize xOffset = 0;
-        usize yOffset = 0;
-        u8* pixelsU8 = (u8*)atlasPixels;
-
-        for (auto& glyph : font->_alphabet)
-        {
-            glyph.second._atlasXOffset = xOffset;
-            glyph.second._atlasYOffset = yOffset;
-
-            for (usize y = 0; y < glyph.second._height; y++)
-            {
-                for (usize x = 0; x < glyph.second._width; x++)
-                {
-                    const usize glyphPixelIndex = x + (y * glyph.second._width);
-                    const usize pixelIndex = (xOffset + x) + ((yOffset + y) * atlasWidth);
-                        
-                    if (glyphPixelIndex < glyph.second._width * glyph.second._height &&
-                        pixelIndex < atlasWidth * atlasHeight)
-                        pixelsU8[pixelIndex] = ((u8*)glyph.second._bitmapData)[glyphPixelIndex];
-                }
-            }
-
-            xOffset += glyph.second._width + 1;
-            if (glyph.second._height > maxGlyphHeight)
-                maxGlyphHeight = glyph.second._height;
-
-            if (xOffset >= cFont::K_MAX_ATLAS_WIDTH)
-            {
-                yOffset += maxGlyphHeight + 1;
-                xOffset = 0;
-                maxGlyphHeight = 0;
-            }
-        }
-
-        font->_atlas = context->CreateTexture(
-            atlasWidth,
-            atlasHeight,
-            0,
-            sTexture::eType::TEXTURE_2D,
-            sTexture::eFormat::R8,
-            atlasPixels
-        );
-
-        memoryPool->Free(atlasPixels);
-    }
-
-    sFont* cFont::CreateFontTTF(const std::string& filename, usize glyphSize)
-    {
-        cApplication* app = GetApplication();
-        cMemoryPool* memoryPool = app->GetMemoryPool();
-        sFont* pFont = (sFont*)memoryPool->Allocate(sizeof(sFont));
-        sFont* font = new (pFont) sFont;
-
-        FT_Face& ftFont = font->_font;
+        FT_Face ftFont = font->GetFont();
 
         if (FT_New_Face(_lib, filename.c_str(), 0, &ftFont) == 0)
         {
@@ -189,24 +214,22 @@ namespace realware
 
             if (FT_Set_Pixel_Sizes(ftFont, glyphSize, glyphSize) == 0)
             {
-                font->_glyphCount = 0;
-                font->_glyphSize = glyphSize;
-                font->_offsetNewline = CalculateNewlineOffset(font);
-                font->_offsetSpace = CalculateSpaceOffset(font);
-                font->_offsetTab = font->_offsetSpace * 4;
+                font->SetGlyphSize(glyphSize);
+                font->SetOffsetNewline(CalculateNewlineOffset(font));
+                font->SetOffsetSpace(CalculateSpaceOffset(font));
+                font->SetOffsetTab(font->GetOffsetSpace() * 4);
 
                 usize atlasWidth = 0;
                 usize atlasHeight = 0;
                 usize xOffset = 0;
 
-                FillAlphabetAndFindAtlasSize(memoryPool, font, xOffset, atlasWidth, atlasHeight);
+                font->FillAlphabetAndFindAtlasSize(xOffset, atlasWidth, atlasHeight);
                 MakeAtlasSizePowerOf2(atlasWidth, atlasHeight);
-                FillAtlasWithGlyphs(memoryPool, font, atlasWidth, atlasHeight, _renderContext);
+                font->FillAtlasWithGlyphs(atlasWidth, atlasHeight);
             }
             else
             {
-                font->~sFont();
-                app->GetMemoryPool()->Free(font);
+                _context->Destroy<cFontFace>(font);
                     
                 return nullptr;
             }
@@ -215,8 +238,7 @@ namespace realware
         {
             Print("Error creating FreeType font face!");
 
-            font->~sFont();
-            app->GetMemoryPool()->Free(font);
+            _context->Destroy<cFontFace>(font);
                 
             return nullptr;
         }
@@ -224,61 +246,46 @@ namespace realware
         return font;
     }
 
-    sText* cFont::CreateText(const sFont* font, const std::string& text)
+    cText* cFont::CreateText(cFontFace* font, const std::string& text)
     {
-        sText* pTextObject = (sText*)GetApplication()->GetMemoryPool()->Allocate(sizeof(sText));
-        sText* textObject = new (pTextObject) sText;
+        cText* textObject = (cText*)_context->Create<cText>(_context);
 
-        textObject->_font = (sFont*)font;
-        textObject->_text = text;
+        textObject->SetFont(font);
+        textObject->SetText(text);
 
         return textObject;
     }
 
-    void cFont::DestroyFontTTF(sFont* font)
+    void cFont::DestroyFontTTF(cFontFace* font)
     {
-        auto& alphabet = font->_alphabet;
-        cTexture* atlas = font->_atlas;
-
-        cApplication* app = GetApplication();
-
-        for (const auto& glyph : alphabet)
-            app->GetMemoryPool()->Free(glyph.second._bitmapData);
-
-        alphabet.clear();
-
-        _gfx->DestroyTexture(atlas);
-
-        FT_Done_Face(font->_font);
-
-        font->~sFont();
-        app->GetMemoryPool()->Free(font);
+        _context->Destroy<cFontFace>(font);
     }
 
-    void cFont::DestroyText(sText* text)
+    void cFont::DestroyText(cText* text)
     {
-        text->~sText();
-        GetApplication()->GetMemoryPool()->Free(text);
+        _context->Destroy<cText>(text);
     }
 
-    f32 cFont::GetTextWidth(sFont* font, const std::string& text) const
+    f32 cFont::GetTextWidth(cFontFace* font, const std::string& text) const
     {
+        cInput* input = _context->GetSubsystem<cInput>();
+
         f32 textWidth = 0.0f;
         f32 maxTextWidth = 0.0f;
         const usize textByteSize = strlen(text.c_str());
-        const glm::vec2 windowSize = GetApplication()->GetWindowSize();
+        const glm::vec2 windowSize = input->GetWindow()->GetSize();
 
         for (usize i = 0; i < textByteSize; i++)
         {
-            const sGlyph& glyph = font->_alphabet.find(text[i])->second;
+            const sGlyph& glyph = font->GetAlphabet().find(text[i])->second;
 
             if (text[i] == '\t')
             {
-                textWidth += font->_offsetTab;
+                textWidth += font->GetOffsetTab();
             }
             else if (text[i] == ' ')
             {
-                textWidth += font->_offsetSpace;
+                textWidth += font->GetOffsetSpace();
             }
             else if (text[i] == '\n')
             {
@@ -301,20 +308,22 @@ namespace realware
         return maxTextWidth;
     }
 
-    f32 cFont::GetTextHeight(sFont* font, const std::string& text) const
+    f32 cFont::GetTextHeight(cFontFace* font, const std::string& text) const
     {
+        cInput* input = _context->GetSubsystem<cInput>();
+
         f32 textHeight = 0.0f;
         f32 maxHeight = 0.0f;
         const usize textByteSize = strlen(text.c_str());
-        const glm::vec2 windowSize = GetApplication()->GetWindowSize();
+        const glm::vec2 windowSize = input->GetWindow()->GetSize();
 
         for (usize i = 0; i < textByteSize; i++)
         {
-            const sGlyph& glyph = font->_alphabet.find(text[i])->second;
+            const sGlyph& glyph = font->GetAlphabet().find(text[i])->second;
 
             if (text[i] == '\n')
             {
-                textHeight += font->_offsetNewline;
+                textHeight += font->GetOffsetNewline();
             }
             else
             {

@@ -44,13 +44,6 @@ namespace realware
         return out;
     }
 
-    void cWindow::SetWindow(GLFWwindow* window, types::usize width, types::usize height)
-    {
-        _window = window;
-        _width = width;
-        _height = height;
-    }
-
     cOpenGLGraphicsAPI::cOpenGLGraphicsAPI(cContext* context) : iGraphicsAPI(context)
     {
         if (glewInit() != GLEW_OK)
@@ -72,63 +65,6 @@ namespace realware
 
     cOpenGLGraphicsAPI::~cOpenGLGraphicsAPI()
     {
-    }
-
-    cWindow* cOpenGLGraphicsAPI::OpenWindow(const std::string& title, usize width, usize height, usize fullscreen)
-    {
-        cWindow* window = _context->Create<cWindow>();
-
-        glfwInit();
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-        glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_API);
-        glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-        if (fullscreen == K_FALSE)
-        {
-            window->SetWindow(glfwCreateWindow(width, height, title.c_str(), nullptr, nullptr), width, height);
-        }
-        else
-        {
-            glfwWindowHint(GLFW_DECORATED, 0);
-
-            const glm::vec2 monitorSize = GetMonitorSize();
-            const usize newWidth = monitorSize.x;
-            const usize newHeight = monitorSize.y;
-            window->SetWindow(glfwCreateWindow(newWidth, newHeight, title.c_str(), glfwGetPrimaryMonitor(), nullptr), newWidth, newHeight);
-        }
-
-        GLFWwindow* glfwWindow = window->GetWindow();
-
-        glfwSetWindowUserPointer(glfwWindow, this);
-
-        if (!glfwWindow)
-        {
-            Print("Error: incompatible GL version!");
-            return;
-        }
-
-        glfwMakeContextCurrent(glfwWindow);
-
-        glfwSwapInterval(1);
-
-        glfwSetKeyCallback(glfwWindow, &KeyCallback);
-        glfwSetWindowFocusCallback(glfwWindow, &WindowFocusCallback);
-        glfwSetWindowSizeCallback(glfwWindow, &WindowSizeCallback);
-        glfwSetCursorPosCallback(glfwWindow, &CursorCallback);
-        glfwSetMouseButtonCallback(glfwWindow, &MouseButtonCallback);
-
-        return window;
-    }
-
-    glm::vec2 cOpenGLGraphicsAPI::GetMonitorSize()
-    {
-        return glm::vec2(GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN));
-    }
-
-    void cOpenGLGraphicsAPI::SwapBuffers(const cWindow* window)
-    {
-        glfwSwapBuffers(window->GetWindow());
     }
 
     cBuffer* cOpenGLGraphicsAPI::CreateBuffer(usize byteSize, cBuffer::eType type, const void* data)

@@ -1,5 +1,5 @@
 // render_manager.cpp
-
+/*
 #include <GL/glew.h>
 #include <iostream>
 #include <assimp/Importer.hpp>
@@ -392,7 +392,7 @@ namespace realware
 
     void mRender::UpdateLights()
     {
-        /*_lightsByteSize = 16; // because vec4 (16 bytes) goes first (contains light count)
+        _lightsByteSize = 16; // because vec4 (16 bytes) goes first (contains light count)
         memset(_lights, 0, 16 + (sizeof(sLightInstance) * 16));
 
         glm::uvec4 lightCount = glm::uvec4(0);
@@ -412,7 +412,7 @@ namespace realware
 
         memcpy((void*)(usize)_lights, &lightCount, sizeof(glm::uvec4));
 
-        _context->WriteBuffer(_lightBuffer, 0, _lightsByteSize, _lights);*/
+        _context->WriteBuffer(_lightBuffer, 0, _lightsByteSize, _lights);
     }
 
     void mRender::WriteObjectsToOpaqueBuffers(cIdVector<cGameObject>& objects, sRenderPass* renderPass)
@@ -931,4 +931,4 @@ namespace realware
         _compositeFinal->_desc._inputTextures[0] = _opaque->_desc._renderTarget->_colorAttachments[0];
         _compositeFinal->_desc._inputTextureNames[0] = "ColorTexture";
     }
-}
+}*/

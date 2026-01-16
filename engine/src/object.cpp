@@ -1,6 +1,7 @@
 // object.cpp
 
 #include "object.hpp"
+#include "event_manager.hpp"
 #include "context.hpp"
 
 namespace realware
@@ -24,7 +25,7 @@ namespace realware
         dispatcher->Send(type);
     }
 
-    void cFactoryObject::Send(eEventType type, cBuffer* data)
+    void cFactoryObject::Send(eEventType type, cDataBuffer* data)
     {
         cEventDispatcher* dispatcher = _context->GetSubsystem<cEventDispatcher>();
         dispatcher->Send(type, data);

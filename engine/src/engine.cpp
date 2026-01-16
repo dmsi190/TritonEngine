@@ -3,6 +3,7 @@
 #include "engine.hpp"
 #include "context.hpp"
 #include "graphics.hpp"
+#include "input.hpp"
 #include "camera_manager.hpp"
 #include "texture_manager.hpp"
 #include "filesystem_manager.hpp"
@@ -21,8 +22,8 @@ namespace realware
 
 	void cEngine::Initialize()
 	{
-		// Create memory pool
-		_context->CreateMemoryPool();
+		// Create memory allocator
+		_context->CreateMemoryAllocator();
 
 		// Register factories
 		_context->RegisterFactory<cWindow>();
@@ -34,6 +35,7 @@ namespace realware
 
 		// Register subsystems
 		_context->RegisterSubsystem(new cGraphics(_context));
+		_context->RegisterSubsystem(new cInput(_context));
 		_context->RegisterSubsystem(new cCamera(_context));
 		_context->RegisterSubsystem(new cTextureAtlas(_context));
 		_context->RegisterSubsystem(new cFileSystem(_context));
@@ -45,10 +47,13 @@ namespace realware
 		_context->RegisterSubsystem(new cEventDispatcher(_context));
 		_context->RegisterSubsystem(new cAudio(_context));
 
-		// Create application window
+		// Create graphics backend
 		cGraphics* graphics = _context->GetSubsystem<cGraphics>();
-		graphics->SetAPI(cGraphics::API::OPENGL);
-		graphics->SetWindow(640, 480);
+		graphics->SetAPI(cGraphics::API::OGL);
+
+		// Create game window
+		cInput* input = _context->GetSubsystem<cInput>();
+		input->SetWindow(640, 480, "Test window");
 
 		// Create texture manager
 		cTextureAtlas* texture = _context->GetSubsystem<cTextureAtlas>();

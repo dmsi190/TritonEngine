@@ -11,8 +11,6 @@ using namespace types;
 
 namespace realware
 {
-	cMemoryAllocator::cMemoryAllocator(cContext* context) : iObject(context) {}
-
 	cMemoryAllocator::~cMemoryAllocator()
 	{
 		if (_bins)
@@ -34,7 +32,7 @@ namespace realware
 			for (usize i = 0; i < bin->_maxBlockCount; i++)
 			{
 				cFactoryObject* obj = (cFactoryObject*)((u8*)bin->_blocks + bin->_blockSize * i);
-				
+
 				if (obj->_occupied == K_FALSE)
 				{
 					obj->_occupied = K_TRUE;
@@ -60,14 +58,14 @@ namespace realware
 		obj->_occupied = K_FALSE;
 	}
 
-	void cMemoryAllocator::AllocateBins(usize maxBinByteSize)
+	void cMemoryAllocator::SetBins(usize maxBinByteSize)
 	{
 		if (_bins || _memSizeToBin)
 			return;
 
 		_bins = (sAllocatorBin*)std::malloc(MAX_BIN_COUNT * sizeof(sAllocatorBin));
 		_memSizeToBin = (sAllocatorBin**)std::malloc(MAX_ALLOCATION_BYTE_SIZE * sizeof(sAllocatorBin*));
-		
+
 		static const usize blockSizes[MAX_BIN_COUNT] =
 		{
 			0, 512, 1024, 1536, 2048, 2560, 3072, 3584, 4096, 4608, 5120,

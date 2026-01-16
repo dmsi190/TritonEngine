@@ -1,5 +1,5 @@
 // render_manager.hpp
-
+/*
 #pragma once
 
 #include <vector>
@@ -260,4 +260,4 @@ namespace realware
         types::usize _materialCountCPU = 0;
         cIdVector<cMaterial> _materialsCPU;
     };
-}
+}*/

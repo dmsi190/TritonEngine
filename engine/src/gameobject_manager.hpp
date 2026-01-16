@@ -13,7 +13,6 @@
 namespace realware
 {
     class mPhysics;
-    class cMemoryPool;
     class cPhysicsController;
     class cPhysicsActor;
     class cPhysicsSimulationScene;
@@ -80,8 +79,6 @@ namespace realware
     public:
         explicit mGameObject(cContext* context);
         ~mGameObject() = default;
-
-        inline virtual cType GetType() const override final { return cType("GameObjectManager"); }
 
         cGameObject* CreateGameObject(const std::string& id);
         cGameObject* FindGameObject(const std::string& id);

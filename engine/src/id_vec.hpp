@@ -9,6 +9,8 @@
 
 namespace realware
 {
+	class cContext;
+
 	template <typename T>
 	class cIdVector : public iObject
 	{

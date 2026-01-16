@@ -2,8 +2,11 @@
 
 #pragma once
 
+#include <unordered_map>
 #include "../../thirdparty/glm/glm/glm.hpp"
 #include "object.hpp"
+#include "category.hpp"
+#include "id_vec.hpp"
 #include "types.hpp"
 
 namespace realware
@@ -143,11 +146,13 @@ namespace realware
 
 	class cGraphics : public iObject
 	{
+        REALWARE_CLASS(cGraphics)
+
 	public:
 		enum class API
 		{
 			NONE = 0,
-			OPENGL,
+			OGL,
 			D3D11
 		};
 
@@ -155,23 +160,16 @@ namespace realware
 		explicit cGraphics(cContext* context);
 		virtual ~cGraphics();
 
-		void SetAPI(API api);
-		void SetWindow(types::usize width, types::usize height);
-		void SwapBuffers();
-
         cMaterial* CreateMaterial(const std::string& id, cTextureAtlasTexture* diffuseTexture, const glm::vec4& diffuseColor, const glm::vec4& highlightColor, eCategory customShaderRenderPath = eCategory::RENDER_PATH_OPAQUE, const std::string& customVertexFuncPath = "", const std::string& customFragmentFuncPath = "");
         cMaterial* FindMaterial(const std::string& id);
         void DestroyMaterial(const std::string& id);
         sVertexArray* CreateDefaultVertexArray();
         sVertexBufferGeometry* CreateGeometry(eCategory format, types::usize verticesByteSize, const void* vertices, types::usize indicesByteSize, const void* indices);
         void DestroyGeometry(sVertexBufferGeometry* geometry);
-
         void ClearGeometryBuffer();
         void ClearRenderPass(const sRenderPass* renderPass, types::boolean clearColor, types::usize bufferIndex, const glm::vec4& color, types::boolean clearDepth, types::f32 depth);
         void ClearRenderPasses(const glm::vec4& clearColor, types::f32 clearDepth);
-
         void UpdateLights();
-
         void WriteObjectsToOpaqueBuffers(cIdVector<cGameObject>& objects, sRenderPass* renderPass);
         void WriteObjectsToTransparentBuffers(cIdVector<cGameObject>& objects, sRenderPass* renderPass);
         void DrawGeometryOpaque(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, sRenderPass* renderPass);
@@ -179,18 +177,15 @@ namespace realware
         void DrawGeometryTransparent(const sVertexBufferGeometry* geometry, const std::vector<cGameObject>& objects, const cGameObject* cameraObject, sRenderPass* renderPass);
         void DrawGeometryTransparent(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, sShader* singleShader = nullptr);
         void DrawTexts(const std::vector<cGameObject>& objects);
-
         void CompositeTransparent();
         void CompositeFinal();
-
         sPrimitive* CreatePrimitive(eCategory primitive);
         sModel* CreateModel(const std::string& filename);
         void DestroyPrimitive(sPrimitive* primitiveObject);
-
         void LoadShaderFiles(const std::string& vertexFuncPath, const std::string& fragmentFuncPath, std::string& vertexFunc, std::string& fragmentFunc);
+        void ResizeRenderTargets(const glm::vec2& size);
 
-        void ResizeWindow(const glm::vec2& size);
-
+        inline iGraphicsAPI* GetAPI() const { return _gfx; }
         inline sBuffer* GetVertexBuffer() const { return _vertexBuffer; }
         inline sBuffer* GetIndexBuffer() const { return _indexBuffer; }
         inline sBuffer* GetOpaqueInstanceBuffer() const { return _opaqueInstanceBuffer; }
@@ -210,13 +205,11 @@ namespace realware
         inline sRenderTarget* GetOpaqueRenderTarget() const { return _opaqueRenderTarget; }
         inline sRenderTarget* GetTransparentRenderTarget() const { return _transparentRenderTarget; }
 
-		inline iGraphicsAPI* GetAPI() const { return _api; }
-		inline cWindow* GetWindow() const { return _window; }
+        void SetAPI(API api);
+        void SwapBuffers();
 
 	private:
-		iGraphicsAPI* _api = nullptr;
-		cWindow* _window = nullptr;
-        iRenderContext* _renderContext = nullptr;
+		iGraphicsAPI* _gfx = nullptr;
         types::usize _maxOpaqueInstanceBufferByteSize = 0;
         types::usize _maxTransparentInstanceBufferByteSize = 0;
         types::usize _maxTextInstanceBufferByteSize = 0;
