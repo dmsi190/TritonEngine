@@ -4,7 +4,6 @@
 
 #include <string>
 #include "log.hpp"
-#include "context.hpp"
 #include "event_types.hpp"
 #include "memory_pool.hpp"
 #include "types.hpp"
@@ -46,8 +45,7 @@ namespace harpy
 		cObject(const cObject& rhs) = delete;
 		cObject& operator=(const cObject& rhs) = delete;
 
-		template <typename... Args>
-		void Subscribe(const std::string& id, eEventType type, Args&&... args);
+		void Subscribe(const std::string& id, eEventType type);
 		void Unsubscribe(eEventType type, cGameObject* receiver);
 		void Send(eEventType type);
 		void Send(eEventType type, cDataBuffer* data);
@@ -61,11 +59,4 @@ namespace harpy
 		types::s64 _allocatorIndex = 0;
 		cIdentifier* _identifier = nullptr;
 	};
-
-	template <typename... Args>
-	void cObject::Subscribe(const std::string& id, eEventType type, Args&&... args)
-	{
-		const cEventDispatcher* dispatcher = _context->GetSubsystem<cEventDispatcher>();
-		dispatcher->Subscribe<Args>(id, type, std::forward<Args>(args)...);
-	}
 }

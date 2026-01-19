@@ -20,6 +20,14 @@ namespace harpy
 
     cEventDispatcher::cEventDispatcher(cContext* context) : cObject(context) {}
 
+    void cEventDispatcher::Subscribe(const std::string& id, eEventType type)
+    {
+        const auto listener = _listeners.find(type);
+        if (listener == _listeners.end())
+            _listeners.insert({ type, std::make_shared<std::vector<cEventHandler>>() });
+        _listeners[type]->emplace_back(id, type);
+    }
+
     void cEventDispatcher::Unsubscribe(eEventType type, cGameObject* receiver)
     {
         if (_listeners.find(type) == _listeners.end())

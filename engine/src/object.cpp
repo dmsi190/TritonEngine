@@ -13,6 +13,12 @@ namespace harpy
         delete _identifier;
     }
 
+    void cObject::Subscribe(const std::string& id, eEventType type)
+    {
+        cEventDispatcher* dispatcher = _context->GetSubsystem<cEventDispatcher>();
+        dispatcher->Subscribe(id, type);
+    }
+
     void cObject::Unsubscribe(eEventType type, cGameObject* receiver)
     {
         cEventDispatcher* dispatcher = _context->GetSubsystem<cEventDispatcher>();

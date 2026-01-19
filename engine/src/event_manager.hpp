@@ -46,8 +46,7 @@ namespace harpy
         explicit cEventDispatcher(cContext* context);
         virtual ~cEventDispatcher() = default;
 
-        template <typename... Args>
-        void Subscribe(const std::string& id, eEventType type, Args&&... args);
+        void Subscribe(const std::string& id, eEventType type);
         void Unsubscribe(eEventType type, cGameObject* receiver);
         void Send(eEventType type);
         void Send(eEventType type, cDataBuffer* data);
@@ -55,13 +54,4 @@ namespace harpy
     private:
         std::unordered_map<eEventType, std::shared_ptr<std::vector<cEventHandler>>> _listeners;
     };
-
-    template <typename... Args>
-    void cEventDispatcher::Subscribe(const std::string& id, eEventType type, Args&&... args)
-    {
-        const auto listener = _listeners.find(type);
-        if (listener == _listeners.end())
-            _listeners.insert({ type, std::make_shared<cIdVector<cEventHandler>>(GetApplication()) });
-        _listeners[type]->Add(id, type, std::forward<Args>(args)...);
-    }
 }
