@@ -131,7 +131,7 @@ namespace harpy
         cTexture* _depthAttachment = nullptr;
     };
 
-    class cDepthMode
+    class cDepthMode : public iObject
     {
         HARPY_OBJECT(cDepthMode)
 
@@ -142,7 +142,7 @@ namespace harpy
         types::boolean _useDepthWrite = types::K_TRUE;
     };
 
-    class cBlendMode
+    class cBlendMode : public iObject
     {
         HARPY_OBJECT(cBlendMode)
 
@@ -189,8 +189,8 @@ namespace harpy
             std::string _shaderVertexFunc = "";
             std::string _shaderFragmentFunc = "";
             cRenderTarget* _renderTarget = nullptr;
-            cDepthMode _depthMode = {};
-            cBlendMode _blendMode = {};
+            cDepthMode _depthMode;
+            cBlendMode _blendMode;
             glm::vec4 _viewport = glm::vec4(0.0f);
         };
 
