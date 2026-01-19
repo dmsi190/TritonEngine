@@ -33,7 +33,7 @@ namespace harpy
 
     class cWindow : public iObject
     {
-        REALWARE_OBJECT(cWindow)
+        HARPY_OBJECT(cWindow)
 
         friend void WindowSizeCallback(GLFWwindow* window, int width, int height);
 
@@ -59,7 +59,7 @@ namespace harpy
 
     class iApplication : public iObject
     {
-        REALWARE_OBJECT(iApplication)
+        HARPY_OBJECT(iApplication)
 
     public:
         enum class eMouseButton

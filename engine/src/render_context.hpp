@@ -16,7 +16,7 @@ namespace harpy
 
     class cGPUResource : public iObject
     {
-        REALWARE_OBJECT(cGPUResource)
+        HARPY_OBJECT(cGPUResource)
         
     protected:
         mutable types::u32 _instance = 0;
@@ -25,7 +25,7 @@ namespace harpy
 
     class cBuffer : public cGPUResource
     {
-        REALWARE_OBJECT(cBuffer)
+        HARPY_OBJECT(cBuffer)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -51,14 +51,14 @@ namespace harpy
 
     class cVertexArray : public cGPUResource
     {
-        REALWARE_OBJECT(cVertexArray)
+        HARPY_OBJECT(cVertexArray)
 
         friend class cOpenGLGraphicsAPI;
     };
 
     class cShader : public cGPUResource
     {
-        REALWARE_OBJECT(cShader)
+        HARPY_OBJECT(cShader)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -79,7 +79,7 @@ namespace harpy
 
     class cTexture : public cGPUResource
     {
-        REALWARE_OBJECT(cTexture)
+        HARPY_OBJECT(cTexture)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -122,7 +122,7 @@ namespace harpy
 
     class cRenderTarget : public cGPUResource
     {
-        REALWARE_OBJECT(cRenderTarget)
+        HARPY_OBJECT(cRenderTarget)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -133,7 +133,7 @@ namespace harpy
 
     class cDepthMode
     {
-        REALWARE_OBJECT(cDepthMode)
+        HARPY_OBJECT(cDepthMode)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -144,7 +144,7 @@ namespace harpy
 
     class cBlendMode
     {
-        REALWARE_OBJECT(cBlendMode)
+        HARPY_OBJECT(cBlendMode)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -167,7 +167,7 @@ namespace harpy
 
     class cRenderPass : public iObject
     {
-        REALWARE_OBJECT(cRenderPass)
+        HARPY_OBJECT(cRenderPass)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -200,7 +200,7 @@ namespace harpy
 
     class iGraphicsAPI : public iObject
     {
-        REALWARE_OBJECT(iGraphicsAPI)
+        HARPY_OBJECT(iGraphicsAPI)
 
     public:
         explicit iGraphicsAPI(cContext* context) : iObject(context) {}
@@ -259,7 +259,7 @@ namespace harpy
 
     class cOpenGLGraphicsAPI : public iGraphicsAPI
     {
-        REALWARE_OBJECT(cOpenGLGraphicsAPI)
+        HARPY_OBJECT(cOpenGLGraphicsAPI)
 
     public:
         explicit cOpenGLGraphicsAPI(cContext* context);

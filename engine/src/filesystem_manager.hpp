@@ -11,7 +11,7 @@ namespace harpy
 
     class cDataFile : public iObject
     {
-        REALWARE_OBJECT(cDataFile)
+        HARPY_OBJECT(cDataFile)
 
     public:
         explicit cDataFile(cContext* context);
@@ -27,7 +27,7 @@ namespace harpy
 
     class cFileSystem : public iObject
     {
-        REALWARE_OBJECT(cFileSystem)
+        HARPY_OBJECT(cFileSystem)
 
     public:
         explicit cFileSystem(cContext* context);

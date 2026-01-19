@@ -84,7 +84,7 @@ namespace harpy
 
     class cMaterial : public iObject
     {
-        REALWARE_OBJECT(cMaterial)
+        HARPY_OBJECT(cMaterial)
 
     public:
         explicit cMaterial(cContext* context, cTextureAtlasTexture* diffuseTexture, const glm::vec4& diffuseColor, const glm::vec4& highlightColor, sShader* customShader) : iObject(context), _diffuseTexture(diffuseTexture), _diffuseColor(diffuseColor), _highlightColor(highlightColor), _customShader(customShader) {}
@@ -146,7 +146,7 @@ namespace harpy
 
 	class cGraphics : public iObject
 	{
-        REALWARE_OBJECT(cGraphics)
+        HARPY_OBJECT(cGraphics)
 
 	public:
 		enum class API

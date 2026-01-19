@@ -16,7 +16,7 @@ namespace harpy
 
 	using ClassType = std::string;
 
-	#define REALWARE_OBJECT(typeName) \
+	#define HARPY_OBJECT(typeName) \
 		public: \
 			virtual ClassType GetType() const override final { return GetTypeStatic(); } \
 		private: \
@@ -48,7 +48,7 @@ namespace harpy
 		iObject(const iObject& rhs) = delete;
 		iObject& operator=(const iObject& rhs) = delete;
 
-		virtual ClassType GetType() = 0;
+		virtual ClassType GetType() const = 0;
 
 		void Subscribe(const std::string& id, eEventType type);
 		void Unsubscribe(eEventType type, cGameObject* receiver);

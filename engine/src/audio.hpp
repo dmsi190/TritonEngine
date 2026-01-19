@@ -32,7 +32,7 @@ namespace harpy
 
 	class cSound : public iObject
 	{
-		REALWARE_OBJECT(cSound)
+		HARPY_OBJECT(cSound)
 
 		friend class cOpenALSoundAPI;
 
@@ -74,7 +74,7 @@ namespace harpy
 
 	class cAudio : public iObject
 	{
-		REALWARE_OBJECT(cAudio)
+		HARPY_OBJECT(cAudio)
 
 	public:
 		enum class API

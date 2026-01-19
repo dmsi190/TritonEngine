@@ -13,7 +13,7 @@ namespace harpy
 
     class cCamera : public iObject
     {
-        REALWARE_OBJECT(cCamera)
+        HARPY_OBJECT(cCamera)
 
     public:
         explicit cCamera(cContext* context);

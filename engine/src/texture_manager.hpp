@@ -18,7 +18,7 @@ namespace harpy
 
     class cTextureAtlasTexture : public iObject
     {
-        REALWARE_OBJECT(cTextureAtlasTexture)
+        HARPY_OBJECT(cTextureAtlasTexture)
 
     public:
         cTextureAtlasTexture(cContext* context, types::boolean isNormalized, const glm::vec3& offset, const glm::vec2& size, cTexture* atlas = nullptr);
@@ -42,7 +42,7 @@ namespace harpy
 
     class cTextureAtlas : public iObject
     {
-        REALWARE_OBJECT(cTextureAtlas)
+        HARPY_OBJECT(cTextureAtlas)
 
     public:
         explicit cTextureAtlas(cContext* context);

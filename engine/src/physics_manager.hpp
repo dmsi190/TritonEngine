@@ -79,7 +79,7 @@ namespace harpy
 
     class cPhysicsScene : public iObject
     {
-        REALWARE_OBJECT(cPhysicsScene)
+        HARPY_OBJECT(cPhysicsScene)
 
     public:
         explicit cPhysicsScene(cContext* context, physx::PxScene* scene, physx::PxControllerManager* controllerManager) : iObject(context), _scene(scene), _controllerManager(controllerManager) {}
@@ -95,7 +95,7 @@ namespace harpy
 
     class cPhysicsMaterial : public iObject
     {
-        REALWARE_OBJECT(cPhysicsMaterial)
+        HARPY_OBJECT(cPhysicsMaterial)
 
     public:
         explicit cPhysicsMaterial(cContext* context, physx::PxMaterial* material) : iObject(context), _material(material) {}
@@ -109,7 +109,7 @@ namespace harpy
 
     class cPhysicsController : public iObject
     {
-        REALWARE_OBJECT(cPhysicsController)
+        HARPY_OBJECT(cPhysicsController)
 
     public:
         explicit cPhysicsController(cContext* context, physx::PxController* controller, types::f32 eyeHeight) : iObject(context), _controller(controller), _eyeHeight(eyeHeight) {}
@@ -125,7 +125,7 @@ namespace harpy
 
     class cPhysicsActor : public iObject
     {
-        REALWARE_OBJECT(cPhysicsActor)
+        HARPY_OBJECT(cPhysicsActor)
 
     public:
         explicit cPhysicsActor(cContext* context, cGameObject* gameObject, physx::PxActor* actor, eCategory actorType) : iObject(context), _gameObject(gameObject), _actor(actor), _type(actorType) {}
@@ -143,7 +143,7 @@ namespace harpy
 
     class cPhysics : public iObject
     {
-        REALWARE_OBJECT(cPhysics)
+        HARPY_OBJECT(cPhysics)
 
     public:
         explicit cPhysics(cContext* context);

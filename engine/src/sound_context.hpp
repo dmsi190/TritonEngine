@@ -20,7 +20,7 @@ namespace harpy
 
     class iSoundAPI : public iObject
     {
-        REALWARE_OBJECT(iSoundAPI)
+        HARPY_OBJECT(iSoundAPI)
 
     public:
         explicit iSoundAPI(cContext* context) : iObject(context) {}
@@ -39,7 +39,7 @@ namespace harpy
 
     class cOpenALSoundAPI : public iSoundAPI
     {
-        REALWARE_OBJECT(cOpenALSoundAPI)
+        HARPY_OBJECT(cOpenALSoundAPI)
 
     public:
         explicit cOpenALSoundAPI(cContext* context);

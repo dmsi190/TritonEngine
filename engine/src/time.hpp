@@ -12,7 +12,7 @@ namespace harpy
 {
 	class cTime : public iObject
 	{
-		REALWARE_OBJECT(cTime)
+		HARPY_OBJECT(cTime)
 
 	public:
 		explicit cTime(cContext* context);

@@ -16,7 +16,7 @@ namespace harpy
 
 	class cInput : public iObject
 	{
-        REALWARE_OBJECT(cInput)
+        HARPY_OBJECT(cInput)
 
         friend class cWindow;
         friend void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

@@ -9,7 +9,7 @@ namespace harpy
 {
     class cDataBuffer : public iObject
     {
-        REALWARE_OBJECT(cDataBuffer)
+        HARPY_OBJECT(cDataBuffer)
 
     public:
         explicit cDataBuffer(cContext* context);

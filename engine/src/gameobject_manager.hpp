@@ -26,7 +26,7 @@ namespace harpy
     
     class cGameObject : public iObject
     {
-        REALWARE_OBJECT(cGameObject)
+        HARPY_OBJECT(cGameObject)
 
         friend class mGameObject;
 

@@ -27,7 +27,7 @@ namespace harpy
 
 	class cEngine : public iObject
 	{
-		REALWARE_OBJECT(cEngine)
+		HARPY_OBJECT(cEngine)
 
 	public:
 		explicit cEngine(cContext* context, const sEngineCapabilities* capabilities, iApplication* app);

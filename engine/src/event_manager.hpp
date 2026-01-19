@@ -40,7 +40,7 @@ namespace harpy
 
     class cEventDispatcher : public iObject
     {
-        REALWARE_OBJECT(cEventDispatcher)
+        HARPY_OBJECT(cEventDispatcher)
 
     public:
         explicit cEventDispatcher(cContext* context);

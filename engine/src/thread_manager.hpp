@@ -36,7 +36,7 @@ namespace harpy
 
     class cThread : public iObject
     {
-        REALWARE_OBJECT(cThread)
+        HARPY_OBJECT(cThread)
 
     public:
         explicit cThread(cContext* context, types::usize threadCount = std::thread::hardware_concurrency());

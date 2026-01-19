@@ -32,7 +32,7 @@ namespace harpy
 
     class cFontFace : public iObject
     {
-        REALWARE_OBJECT(cFontFace)
+        HARPY_OBJECT(cFontFace)
 
     public:
         explicit cFontFace(cContext* context);
@@ -66,7 +66,7 @@ namespace harpy
 
     class cText : public iObject
     {
-        REALWARE_OBJECT(cText)
+        HARPY_OBJECT(cText)
 
     public:
         explicit cText(cContext* context);
@@ -82,7 +82,7 @@ namespace harpy
 
     class cFont : public iObject
     {
-        REALWARE_OBJECT(cFont)
+        HARPY_OBJECT(cFont)
 
     public:
         explicit cFont(cContext* context);

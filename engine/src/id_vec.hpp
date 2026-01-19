@@ -14,7 +14,7 @@ namespace harpy
 	template <typename T>
 	class cIdVector : public iObject
 	{
-		REALWARE_OBJECT(cIdVector)
+		HARPY_OBJECT(cIdVector)
 
 	public:
 		explicit cIdVector(cContext* context, types::usize maxElementCount);
