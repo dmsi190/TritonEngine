@@ -7,7 +7,7 @@
 #include "factory.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
 	class cMemoryAllocator;
 

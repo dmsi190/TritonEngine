@@ -11,7 +11,7 @@
 #include "object.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     class cApplication;
     class cBuffer;
@@ -36,7 +36,7 @@ namespace harpy
 
     class cThread : public iObject
     {
-        HARPY_OBJECT(cThread)
+        TRITON_OBJECT(cThread)
 
     public:
         explicit cThread(cContext* context, types::usize threadCount = std::thread::hardware_concurrency());

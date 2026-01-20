@@ -7,14 +7,14 @@
 #include "log.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
 	class cContext;
 
 	template <typename T>
 	class cIdVector : public iObject
 	{
-		HARPY_OBJECT(cIdVector)
+		TRITON_OBJECT(cIdVector)
 
 	public:
 		explicit cIdVector(cContext* context, types::usize maxElementCount);

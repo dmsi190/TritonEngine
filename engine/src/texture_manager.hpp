@@ -9,7 +9,7 @@
 #include "object.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     class cContext;
     class iGraphicsAPI;
@@ -18,7 +18,7 @@ namespace harpy
 
     class cTextureAtlasTexture : public iObject
     {
-        HARPY_OBJECT(cTextureAtlasTexture)
+        TRITON_OBJECT(cTextureAtlasTexture)
 
     public:
         cTextureAtlasTexture(cContext* context, types::boolean isNormalized, const glm::vec3& offset, const glm::vec2& size, cTexture* atlas = nullptr);
@@ -42,7 +42,7 @@ namespace harpy
 
     class cTextureAtlas : public iObject
     {
-        HARPY_OBJECT(cTextureAtlas)
+        TRITON_OBJECT(cTextureAtlas)
 
     public:
         explicit cTextureAtlas(cContext* context);

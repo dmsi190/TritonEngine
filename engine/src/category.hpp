@@ -2,7 +2,7 @@
 
 #pragma once
 
-namespace harpy
+namespace triton
 {
     enum class eCategory
     {

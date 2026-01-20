@@ -6,7 +6,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
 	cIdentifier::cIdentifier(const std::string& id) : _id(id) {}
 

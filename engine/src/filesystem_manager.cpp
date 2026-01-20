@@ -13,7 +13,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
     cDataFile::cDataFile(cContext* context) : iObject(context) {}
 

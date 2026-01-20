@@ -6,7 +6,7 @@
 #include "id_vec.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
 	class cContext;
 	class iSoundAPI;
@@ -32,7 +32,7 @@ namespace harpy
 
 	class cSound : public iObject
 	{
-		HARPY_OBJECT(cSound)
+		TRITON_OBJECT(cSound)
 
 		friend class cOpenALSoundAPI;
 
@@ -74,7 +74,7 @@ namespace harpy
 
 	class cAudio : public iObject
 	{
-		HARPY_OBJECT(cAudio)
+		TRITON_OBJECT(cAudio)
 
 	public:
 		enum class API

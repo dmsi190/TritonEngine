@@ -15,7 +15,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
     cCamera::cCamera(cContext* context) : iObject(context), _transform(_context->Create<sTransform>()) {}
 

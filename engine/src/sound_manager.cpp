@@ -7,7 +7,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
     mSound::mSound(cContext* context, iSoundContext* soundContext) : iObject(context), _soundContext(soundContext), _sounds(app) {}
 

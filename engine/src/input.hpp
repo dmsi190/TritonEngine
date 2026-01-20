@@ -10,13 +10,13 @@
 
 struct GLFWwindow;
 
-namespace harpy
+namespace triton
 {
 	class cContext;
 
 	class cInput : public iObject
 	{
-        HARPY_OBJECT(cInput)
+        TRITON_OBJECT(cInput)
 
         friend class cWindow;
         friend void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);

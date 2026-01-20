@@ -8,7 +8,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
     cGameObject::cGameObject(cContext* context) : iObject(context)
     {

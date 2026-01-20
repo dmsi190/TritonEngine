@@ -7,13 +7,13 @@
 #include "object.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     struct sTransform;
 
     class cCamera : public iObject
     {
-        HARPY_OBJECT(cCamera)
+        TRITON_OBJECT(cCamera)
 
     public:
         explicit cCamera(cContext* context);

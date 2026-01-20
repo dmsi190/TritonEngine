@@ -9,7 +9,7 @@
 #include "object.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     class iGraphicsAPI;
     class cApplication;
@@ -32,7 +32,7 @@ namespace harpy
 
     class cFontFace : public iObject
     {
-        HARPY_OBJECT(cFontFace)
+        TRITON_OBJECT(cFontFace)
 
     public:
         explicit cFontFace(cContext* context);
@@ -66,7 +66,7 @@ namespace harpy
 
     class cText : public iObject
     {
-        HARPY_OBJECT(cText)
+        TRITON_OBJECT(cText)
 
     public:
         explicit cText(cContext* context);
@@ -84,7 +84,7 @@ namespace harpy
 
     class cFont : public iObject
     {
-        HARPY_OBJECT(cFont)
+        TRITON_OBJECT(cFont)
 
     public:
         explicit cFont(cContext* context);

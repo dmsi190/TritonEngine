@@ -13,7 +13,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
     usize CalculateNewlineOffset(cFontFace* font)
     {

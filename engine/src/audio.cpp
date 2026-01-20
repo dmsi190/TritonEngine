@@ -10,7 +10,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
 	cSound::cSound(cContext* context, eFormat format, const std::string& path) : iObject(context), _audioBackend(context->GetSubsystem<cAudio>()->GetAPI())
 	{

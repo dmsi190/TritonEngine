@@ -19,7 +19,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
     void APIENTRY GLDebugCallback(
         GLenum source,

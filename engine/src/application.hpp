@@ -10,13 +10,13 @@
 
 struct GLFWwindow;
 
-namespace harpy
+namespace triton
 {
     class cEngine;
 
     class cWindow : public iObject
     {
-        HARPY_OBJECT(cWindow)
+        TRITON_OBJECT(cWindow)
 
         friend void WindowSizeCallback(GLFWwindow* window, int width, int height);
 
@@ -66,7 +66,7 @@ namespace harpy
 
     class iApplication : public iObject
     {
-        HARPY_OBJECT(iApplication)
+        TRITON_OBJECT(iApplication)
 
     public:
         enum class eMouseButton

@@ -10,7 +10,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
     cEventHandler::cEventHandler(cContext* context, iObject* receiver, eEventType type, EventFunction&& function) : iObject(context), _receiver(receiver), _type(type), _function(std::make_shared<EventFunction>(std::move(function))) {}
 

@@ -9,7 +9,7 @@
 #include "object.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     class cApplication;
     class cTextureAtlasTexture;
@@ -17,7 +17,7 @@ namespace harpy
 
     class cGPUResource : public iObject
     {
-        HARPY_OBJECT(cGPUResource)
+        TRITON_OBJECT(cGPUResource)
         
     protected:
         mutable types::u32 _instance = 0;
@@ -26,7 +26,7 @@ namespace harpy
 
     class cBuffer : public cGPUResource
     {
-        HARPY_OBJECT(cBuffer)
+        TRITON_OBJECT(cBuffer)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -52,14 +52,14 @@ namespace harpy
 
     class cVertexArray : public cGPUResource
     {
-        HARPY_OBJECT(cVertexArray)
+        TRITON_OBJECT(cVertexArray)
 
         friend class cOpenGLGraphicsAPI;
     };
 
     class cShader : public cGPUResource
     {
-        HARPY_OBJECT(cShader)
+        TRITON_OBJECT(cShader)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -80,7 +80,7 @@ namespace harpy
 
     class cTexture : public cGPUResource
     {
-        HARPY_OBJECT(cTexture)
+        TRITON_OBJECT(cTexture)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -123,7 +123,7 @@ namespace harpy
 
     class cRenderTarget : public cGPUResource
     {
-        HARPY_OBJECT(cRenderTarget)
+        TRITON_OBJECT(cRenderTarget)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -180,7 +180,7 @@ namespace harpy
 
     class cRenderPassGPU : public iObject
     {
-        HARPY_OBJECT(cRenderPassGPU)
+        TRITON_OBJECT(cRenderPassGPU)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -200,7 +200,7 @@ namespace harpy
 
     class iGraphicsAPI : public iObject
     {
-        HARPY_OBJECT(iGraphicsAPI)
+        TRITON_OBJECT(iGraphicsAPI)
 
     public:
         explicit iGraphicsAPI(cContext* context) : iObject(context) {}
@@ -259,7 +259,7 @@ namespace harpy
 
     class cOpenGLGraphicsAPI : public iGraphicsAPI
     {
-        HARPY_OBJECT(cOpenGLGraphicsAPI)
+        TRITON_OBJECT(cOpenGLGraphicsAPI)
 
     public:
         explicit cOpenGLGraphicsAPI(cContext* context);

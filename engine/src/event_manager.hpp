@@ -11,14 +11,14 @@
 #include "id_vec.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     class cDataBuffer;
     class cContext;
     
     class cEventHandler : public iObject
     {
-        HARPY_OBJECT(cEventHandler)
+        TRITON_OBJECT(cEventHandler)
 
         friend class mEvent;
 
@@ -39,7 +39,7 @@ namespace harpy
 
     class cEventDispatcher : public iObject
     {
-        HARPY_OBJECT(cEventDispatcher)
+        TRITON_OBJECT(cEventDispatcher)
 
     public:
         explicit cEventDispatcher(cContext* context);

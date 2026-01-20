@@ -10,7 +10,7 @@
 #include "object.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     class mPhysics;
     class cPhysicsController;
@@ -26,7 +26,7 @@ namespace harpy
     
     class cGameObject : public iObject
     {
-        HARPY_OBJECT(cGameObject)
+        TRITON_OBJECT(cGameObject)
 
         friend class mGameObject;
 

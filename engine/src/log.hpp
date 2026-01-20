@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-namespace harpy
+namespace triton
 {
 	template<typename T>
 	void Print(const T& message)

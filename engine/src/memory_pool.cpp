@@ -9,7 +9,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
 	cMemoryAllocator::~cMemoryAllocator()
 	{

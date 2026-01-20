@@ -13,7 +13,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
     cOpenALSoundAPI::cOpenALSoundAPI(cContext* context) : iSoundAPI(context)
     {

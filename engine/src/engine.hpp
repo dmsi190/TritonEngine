@@ -6,7 +6,7 @@
 #include "object.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
 	class cContext;
 	struct sApplicationCapabilities;
@@ -14,7 +14,7 @@ namespace harpy
 
 	class cEngine : public iObject
 	{
-		HARPY_OBJECT(cEngine)
+		TRITON_OBJECT(cEngine)
 
 	public:
 		explicit cEngine(cContext* context, iApplication* app);

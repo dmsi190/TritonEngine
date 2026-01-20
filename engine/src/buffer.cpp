@@ -4,7 +4,7 @@
 
 #include "buffer.hpp"
 
-namespace harpy
+namespace triton
 {
     cDataBuffer::cDataBuffer(cContext* context) : iObject(context) {}
 

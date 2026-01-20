@@ -5,11 +5,11 @@
 #include "object.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     class cDataBuffer : public iObject
     {
-        HARPY_OBJECT(cDataBuffer)
+        TRITON_OBJECT(cDataBuffer)
 
     public:
         explicit cDataBuffer(cContext* context);

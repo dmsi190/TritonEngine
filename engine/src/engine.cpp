@@ -19,7 +19,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
 	cEngine::cEngine(cContext* context, iApplication* app) : iObject(context), _app(app) {}
 

@@ -2,7 +2,7 @@
 
 #include "time.hpp"
 
-namespace harpy
+namespace triton
 {
 	cTime::cTime(cContext* context) : iObject(context) {}
 

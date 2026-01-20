@@ -27,7 +27,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
     cWindow::cWindow(cContext* context, const std::string& title, types::usize width, types::usize height, types::boolean fullscreen) : iObject(context), _title(title), _fullscreen(fullscreen)
     {

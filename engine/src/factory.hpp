@@ -10,14 +10,14 @@
 #include "object.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
 	class cContext;
 
 	template <typename T>
 	class cFactory : public iObject
 	{
-		HARPY_OBJECT(cFactory)
+		TRITON_OBJECT(cFactory)
 
 	public:
 		explicit cFactory(cContext* context) : iObject(context) {}

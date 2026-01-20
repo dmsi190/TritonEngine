@@ -8,7 +8,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
     void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {

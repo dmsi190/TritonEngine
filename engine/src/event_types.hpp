@@ -2,7 +2,7 @@
 
 #include <functional>
 
-namespace harpy
+namespace triton
 {
     class cDataBuffer;
 

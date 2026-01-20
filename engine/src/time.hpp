@@ -8,11 +8,11 @@
 #include "object.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
 	class cTime : public iObject
 	{
-		HARPY_OBJECT(cTime)
+		TRITON_OBJECT(cTime)
 
 	public:
 		explicit cTime(cContext* context);

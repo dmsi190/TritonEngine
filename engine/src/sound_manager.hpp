@@ -10,7 +10,7 @@
 #include "id_vec.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     class cApplication;
     class iSoundContext;

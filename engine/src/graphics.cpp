@@ -25,7 +25,7 @@
 
 using namespace types;
 
-namespace harpy
+namespace triton
 {
     sTransform::sTransform(const cGameObject* gameObject)
     {

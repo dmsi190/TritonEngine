@@ -4,7 +4,7 @@
 #include "memory_pool.hpp"
 #include "render_context.hpp"
 
-namespace harpy
+namespace triton
 {
 	void cContext::CreateMemoryAllocator()
 	{

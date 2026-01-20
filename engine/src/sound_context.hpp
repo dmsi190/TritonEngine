@@ -12,7 +12,7 @@
 #include "id_vec.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     class cApplication;
     class cSound;
@@ -20,7 +20,7 @@ namespace harpy
 
     class iSoundAPI : public iObject
     {
-        HARPY_OBJECT(iSoundAPI)
+        TRITON_OBJECT(iSoundAPI)
 
     public:
         explicit iSoundAPI(cContext* context) : iObject(context) {}
@@ -39,7 +39,7 @@ namespace harpy
 
     class cOpenALSoundAPI : public iSoundAPI
     {
-        HARPY_OBJECT(cOpenALSoundAPI)
+        TRITON_OBJECT(cOpenALSoundAPI)
 
     public:
         explicit cOpenALSoundAPI(cContext* context);

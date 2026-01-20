@@ -8,7 +8,7 @@
 #include "memory_pool.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
 	class cContext;
 	class cDataBuffer;
@@ -16,7 +16,7 @@ namespace harpy
 
 	using ClassType = std::string;
 
-	#define HARPY_OBJECT(typeName) \
+	#define TRITON_OBJECT(typeName) \
 		public: \
 			static ClassType GetTypeStatic() { return #typeName; } \
 			virtual ClassType GetType() const override { return GetTypeStatic(); } \

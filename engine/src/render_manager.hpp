@@ -11,7 +11,7 @@
 #include "object.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     class iRenderContext;
     class cApplication;

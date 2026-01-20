@@ -10,7 +10,7 @@
 #include "id_vec.hpp"
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
 	class cWindow;
 	class iGraphicsAPI;
@@ -85,7 +85,7 @@ namespace harpy
 
     class cMaterial : public iObject
     {
-        HARPY_OBJECT(cMaterial)
+        TRITON_OBJECT(cMaterial)
 
     public:
         explicit cMaterial(cContext* context, cTextureAtlasTexture* diffuseTexture, const glm::vec4& diffuseColor, const glm::vec4& highlightColor, cShader* customShader) : iObject(context), _diffuseTexture(diffuseTexture), _diffuseColor(diffuseColor), _highlightColor(highlightColor), _customShader(customShader) {}
@@ -147,7 +147,7 @@ namespace harpy
 
     class cRenderPass : public iObject
     {
-        HARPY_OBJECT(cRenderPass)
+        TRITON_OBJECT(cRenderPass)
 
         friend class cOpenGLGraphicsAPI;
 
@@ -173,7 +173,7 @@ namespace harpy
 
 	class cGraphics : public iObject
 	{
-        HARPY_OBJECT(cGraphics)
+        TRITON_OBJECT(cGraphics)
 
 	public:
 		enum class eAPI

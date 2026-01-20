@@ -4,7 +4,7 @@
 
 #include "types.hpp"
 
-namespace harpy
+namespace triton
 {
     namespace core
     {
