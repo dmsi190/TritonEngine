@@ -87,8 +87,8 @@ namespace triton
 		explicit cAudio(cContext* context);
 		virtual ~cAudio() override final;
 
-		cSound* CreateSound(const std::string& id, cSound::eFormat format, const std::string& path);
-		cSound* FindSound(const std::string& id);
+		cCacheObject<cSound> CreateSound(const std::string& id, cSound::eFormat format, const std::string& path);
+		cCacheObject<cSound> FindSound(const std::string& id);
 		void DestroySound(const std::string& id);
 
 		inline iSoundAPI* GetAPI() const { return _audioBackend; }

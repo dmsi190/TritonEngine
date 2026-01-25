@@ -85,7 +85,7 @@ namespace triton
 	cAudio::cAudio(cContext* context) : iObject(context)
 	{
 		const sCapabilities* caps = context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
-		_sounds = _context->Create<cIdVector<cSound>>(_context, caps->maxSoundCount);
+		_sounds = _context->Create<cCache<cSound>>(_context, caps->maxSoundCount);
 	}
 
 	cAudio::~cAudio()
@@ -103,19 +103,19 @@ namespace triton
 		}
 	}
 
-	cSound* cAudio::CreateSound(const std::string& id, cSound::eFormat format, const std::string& path)
+	cCacheObject<cSound> cAudio::CreateSound(const std::string& id, cSound::eFormat format, const std::string& path)
 	{
-		return _sounds->Add(id, _context, format, path);
+		return _sounds->Create(id, _context, format, path);
 	}
 
-	cSound* cAudio::FindSound(const std::string& id)
+	cCacheObject<cSound> cAudio::FindSound(const std::string& id)
 	{
 		return _sounds->Find(id);
 	}
 
 	void cAudio::DestroySound(const std::string& id)
 	{
-		_sounds->Delete(id);
+		_sounds->Destroy(id);
 	}
 
 	void cAudio::SetAPI(API api)
