@@ -276,7 +276,7 @@ namespace triton
         f32 textWidth = 0.0f;
         f32 maxTextWidth = 0.0f;
         const usize textByteSize = strlen(text.c_str());
-        const glm::vec2 windowSize = app->GetWindow()->GetSize();
+        const cVector2 windowSize = app->GetWindow()->GetSize();
 
         for (usize i = 0; i < textByteSize; i++)
         {
@@ -298,7 +298,7 @@ namespace triton
             }
             else
             {
-                textWidth += ((f32)glyph._width / windowSize.x);
+                textWidth += ((f32)glyph._width / windowSize.GetX());
             }
         }
 
@@ -318,7 +318,7 @@ namespace triton
         f32 textHeight = 0.0f;
         f32 maxHeight = 0.0f;
         const usize textByteSize = strlen(text.c_str());
-        const glm::vec2 windowSize = app->GetWindow()->GetSize();
+        const cVector2 windowSize = app->GetWindow()->GetSize();
 
         for (usize i = 0; i < textByteSize; i++)
         {
@@ -330,7 +330,7 @@ namespace triton
             }
             else
             {
-                f32 glyphHeight = ((f32)glyph._height / windowSize.y);
+                f32 glyphHeight = ((f32)glyph._height / windowSize.GetY());
                 if (glyphHeight > maxHeight) {
                     maxHeight = glyphHeight;
                 }
