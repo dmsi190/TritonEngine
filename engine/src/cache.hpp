@@ -33,8 +33,7 @@ namespace triton
 	};
 
 	template <typename T>
-	cCache<T>::cCache(cContext* context, const sChunkAllocatorDescriptor& allocatorDesc)
-		: iObject(context)
+	cCache<T>::cCache(cContext* context, const sChunkAllocatorDescriptor& allocatorDesc) : iObject(context)
 	{
 		_objects = _context->Create<cMap<T>>(_context, allocatorDesc);
 	}
