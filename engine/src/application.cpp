@@ -114,7 +114,7 @@ namespace triton
         return cVector2((f32)x, (f32)y);
     }
 
-    iApplication::iApplication(cContext* context, const sApplicationCapabilities* caps) : iObject(context), _caps(caps)
+    iApplication::iApplication(cContext* context, const sCapabilities* caps) : iObject(context), _caps(caps)
     {
         _engine = _context->Create<cEngine>(_context, this);
         _window = _context->Create<cWindow>(_context, caps->windowTitle, caps->windowWidth, caps->windowHeight, caps->fullscreen);

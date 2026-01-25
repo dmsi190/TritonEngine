@@ -5,6 +5,7 @@
 #include "application.hpp"
 #include "context.hpp"
 #include "gameobject_manager.hpp"
+#include "engine.hpp"
 #include "event_manager.hpp"
 #include "buffer.hpp"
 
@@ -26,7 +27,7 @@ namespace triton
         const auto listener = _listeners.find(type);
         if (listener == _listeners.end())
         {
-            const sApplicationCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
+            const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
             _listeners.insert({ type, std::make_shared<cIdVector<cEventHandler>>(_context, caps->maxEventPerTypeCount) });
         }
 

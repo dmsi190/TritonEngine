@@ -1,0 +1,27 @@
+#pragma once
+
+namespace triton
+{
+    struct sCapabilities
+    {
+        std::string windowTitle = "Test app";
+        types::usize windowWidth = 640;
+        types::usize windowHeight = 480;
+        types::boolean fullscreen = types::K_FALSE;
+        types::usize memoryAlignment = 64;
+        types::usize maxPhysicsSceneCount = 16;
+        types::usize maxPhysicsMaterialCount = 256;
+        types::usize maxPhysicsActorCount = 8192;
+        types::usize maxPhysicsControllerCount = 8;
+        types::usize maxSoundCount = 65536;
+        types::usize maxEventPerTypeCount = 8192;
+        types::usize maxRenderOpaqueInstanceCount = 65536;
+        types::usize maxRenderTransparentInstanceCount = 65536;
+        types::usize maxRenderTextInstanceCount = 8192;
+        types::usize maxRenderMaterialCount = 256;
+        types::usize maxRenderLightCount = 256;
+        types::usize maxRenderTextureAtlasTextureCount = 8192;
+        types::usize vertexBufferSize = 64 * 1024 * 1024;
+        types::usize indexBufferSize = 64 * 1024 * 1024;
+    };
+}

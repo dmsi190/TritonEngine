@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <chrono>
 #include "object.hpp"
+#include "capabilities.hpp"
 #include "math.hpp"
 #include "types.hpp"
 
@@ -45,30 +46,6 @@ namespace triton
         types::boolean _fullscreen = types::K_FALSE;
     };
 
-    struct sApplicationCapabilities
-    {
-        std::string windowTitle = "Test app";
-        types::usize windowWidth = 640;
-        types::usize windowHeight = 480;
-        types::boolean fullscreen = types::K_FALSE;
-        types::usize memoryAlignment = 64;
-        types::usize maxPhysicsSceneCount = 16;
-        types::usize maxPhysicsMaterialCount = 256;
-        types::usize maxPhysicsActorCount = 8192;
-        types::usize maxPhysicsControllerCount = 8;
-        types::usize maxSoundCount = 65536;
-        types::usize maxEventPerTypeCount = 8192;
-        types::usize maxRenderOpaqueInstanceCount = 65536;
-        types::usize maxRenderTransparentInstanceCount = 65536;
-        types::usize maxRenderTextInstanceCount = 8192;
-        types::usize maxRenderMaterialCount = 256;
-        types::usize maxRenderLightCount = 256;
-        types::usize maxRenderTextureAtlasTextureCount = 8192;
-        types::usize vertexBufferSize = 64 * 1024 * 1024;
-        types::usize indexBufferSize = 64 * 1024 * 1024;
-
-    };
-
     class iApplication : public iObject
     {
         TRITON_OBJECT(iApplication)
@@ -81,18 +58,18 @@ namespace triton
             MIDDLE
         };
 
-        explicit iApplication(cContext* context, const sApplicationCapabilities* caps);
-        ~iApplication();
+        explicit iApplication(cContext* context, const sCapabilities* caps);
+        virtual ~iApplication() override final;
 
         virtual void Setup() = 0;
         virtual void Stop() = 0;
 
-        inline const sApplicationCapabilities* GetCapabilities() const { return _caps; }
+        inline const sCapabilities* GetCapabilities() const { return _caps; }
         inline cEngine* GetEngine() const { return _engine; }
         inline cWindow* GetWindow() const { return _window; }
 
     protected:
-        const sApplicationCapabilities* _caps = nullptr;
+        const sCapabilities* _caps = nullptr;
         cEngine* _engine = nullptr;
         cWindow* _window = nullptr;
     };
