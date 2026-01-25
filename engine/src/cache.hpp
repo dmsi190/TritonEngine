@@ -22,8 +22,8 @@ namespace triton
 
 		template <typename... Args>
 		cCacheObject<T> Create(Args&&... args);
-		cCacheObject<T> Find(const cCacheObject<T>& object);
-		void Destroy(cCacheObject<T>& object);
+		cCacheObject<T> Find(const std::string& id);
+		void Destroy(const std::string& id);
 
 	private:
 		cMap<T>* _objects = nullptr;
@@ -47,14 +47,14 @@ namespace triton
 	}
 
 	template <typename T>
-	cCacheObject<T> cCache<T>::Find(const cCacheObject<T>& object)
+	cCacheObject<T> cCache<T>::Find(const std::string& id)
 	{
-		return _objects->Find(object.object->GetID());
+		return _objects->Find(id);
 	}
 
 	template <typename T>
-	void cCache<T>::Destroy(cCacheObject<T>& object)
+	void cCache<T>::Destroy(const std::string& id)
 	{
-		_objects->Erase(object.object->GetID());
+		_objects->Erase(id);
 	}
 }
