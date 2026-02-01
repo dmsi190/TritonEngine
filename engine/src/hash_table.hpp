@@ -22,7 +22,7 @@ namespace triton
 		types::usize hashTableSize = 4096;
 	};
 
-	template <typename T>
+	template <typename TKey, typename TValue>
 	class cHashTable : public iObject
 	{
 	public:
@@ -30,11 +30,11 @@ namespace triton
 		virtual ~cHashTable() override final;
 
 		template<typename... Args>
-		T* Insert(Args&&... args);
-		T* Insert(const cTag& key, const T&& value);
-		T* Find(const cTag& key) const;
-		T* Find(types::u32 index) const;
-		void Erase(const cTag& key);
+		TValue* Insert(Args&&... args);
+		TValue* Insert(const TKey& key, const TValue&& value);
+		TValue* Find(const TKey& key) const;
+		TValue* Find(types::u32 index) const;
+		void Erase(const TKey& key);
 		void Erase(types::u32 index);
 
 		inline types::usize GetElementCount() const { return _elementCount; }
@@ -58,8 +58,8 @@ namespace triton
 		sChunkElement* _hashTable = nullptr;
 	};
 
-	template <typename T>
-	cHashTable<T>::cHashTable(cContext* context, const sChunkAllocatorDescriptor& allocatorDesc) : iObject(context)
+	template <typename TKey, typename TValue>
+	cHashTable<TKey, TValue>::cHashTable(cContext* context, const sChunkAllocatorDescriptor& allocatorDesc) : iObject(context)
 	{
 		const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
 		cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
@@ -67,7 +67,7 @@ namespace triton
 		_allocatorDesc = allocatorDesc;
 		_objectByteSize = sizeof(T);
 		_objectCountPerChunk = chunkByteSize / _objectByteSize;
-		_chunks = (T**)memoryAllocator->Allocate(_maxChunkCount * sizeof(T*), caps->memoryAlignment);
+		_chunks = (TValue**)memoryAllocator->Allocate(_maxChunkCount * sizeof(TValue*), caps->memoryAlignment);
 		_hashTableSize = hashTableSize;
 		_hashMask = MakeHashMask(hashTableSize);
 		_hashTable = (sChunkElement*)memoryAllocator->Allocate(_hashTableSize * sizeof(sChunkElement), caps->memoryAlignment);
@@ -75,8 +75,8 @@ namespace triton
 		AllocateNewChunk();
 	}
 
-	template <typename T>
-	cHashTable<T>::~cHashTable()
+	template <typename TKey, typename TValue>
+	cHashTable<TKey, TValue>::~cHashTable()
 	{
 		for (types::usize i = 0; i < _chunkCount; i++)
 			DeallocateChunk(i);
@@ -86,9 +86,9 @@ namespace triton
 		memoryAllocator->Deallocate(_chunks);
 	}
 
-	template <typename T>
+	template <typename TKey, typename TValue>
 	template <typename... Args>
-	T* cHashTable<T>::Insert(Args&&... args)
+	TValue* cHashTable<TKey, TValue>::Insert(Args&&... args)
 	{
 		types::u32 elementChunkIndex = GetChunkIndex(_elementCount);
 		types::u32 elementLocalPosition = GetChunkLocalPosition(elementChunkIndex, _elementCount);
@@ -103,7 +103,7 @@ namespace triton
 		_elementCount += 1;
 
 		cHandle::index idx = (cHandle::index)elementLocalPosition;
-		T* object = _context->Create<T>(_chunks[elementChunkIndex], idx, std::forward<Args>(args)...);
+		TValue* object = _context->Create<TValue>(_chunks[elementChunkIndex], idx, std::forward<Args>(args)...);
 
 		sChunkElement ce;
 		ce.chunk = elementChunkIndex;
@@ -115,8 +115,8 @@ namespace triton
 		return object;
 	}
 
-	template <typename T>
-	T* cHashTable<T>::Insert(const cTag& key, const T&& value)
+	template <typename TKey, typename TValue>
+	TValue* cHashTable<TKey, TValue>::Insert(const TKey& key, const TValue&& value)
 	{
 		types::u32 elementChunkIndex = GetChunkIndex(_elementCount);
 		types::u32 elementLocalPosition = GetChunkLocalPosition(elementChunkIndex, _elementCount);
@@ -132,7 +132,7 @@ namespace triton
 
 		cHandle::index idx = (cHandle::index)elementLocalPosition;
 		_chunks[elementChunkIndex][idx] = std::move(value);
-		T* object = &_chunks[elementChunkIndex][idx];
+		TValue* object = &_chunks[elementChunkIndex][idx];
 		object->_identifier = key;
 
 		sChunkElement ce;
@@ -145,8 +145,8 @@ namespace triton
 		return object;
 	}
 
-	template <typename T>
-	T* cHashTable<T>::Find(const cTag& key) const
+	template <typename TKey, typename TValue>
+	TValue* cHashTable<TKey, TValue>::Find(const TKey& key) const
 	{
 		const types::usize chunkObjectCount = GetChunkLocalPosition(_chunkCount - 1, _elementCount);
 		const types::cpuword hash = Hash(key.GetData(), key.GetByteSize());
@@ -154,7 +154,7 @@ namespace triton
 		if (ce.chunk < _chunkCount && ce.position < chunkObjectCount)
 		{
 			const T* object = &_chunks[ce.chunk][ce.position];
-			if (key.Compare(object->GetID()))
+			if (key == object->GetID())
 				return (const T*)object;
 		}
 
@@ -163,7 +163,7 @@ namespace triton
 			for (types::usize j = 0; j < _objectCountPerChunk; j++)
 			{
 				const T* object = &_chunks[i][j];
-				if (key.Compare(object->GetID()))
+				if (key == object->GetID())
 					return (const T*)object;
 			}
 		}
@@ -171,8 +171,8 @@ namespace triton
 		return nullptr;
 	}
 
-	template <typename T>
-	T* cHashTable<T>::Find(types::u32 index) const
+	template <typename TKey, typename TValue>
+	TValue* cHashTable<TKey, TValue>::Find(types::u32 index) const
 	{
 		const types::u32 chunkIndex = GetChunkIndex(index);
 
@@ -187,14 +187,14 @@ namespace triton
 		return &_chunks[chunkIndex][localPosition];
 	}
 
-	template <typename T>
-	void cHashTable<T>::Erase(const cTag& key)
+	template <typename TKey, typename TValue>
+	void cHashTable<TKey, TValue>::Erase(const TKey& key)
 	{
 		for (types::usize i = 0; i < _chunkCount; i++)
 		{
 			for (types::usize j = 0; j < _objectCountPerChunk; j++)
 			{
-				if (key.Compare(_chunks[i][j]->GetID()))
+				if (key == _chunks[i][j]->GetID())
 				{
 					const types::u32 lastChunkIndex = GetChunkIndex(_elementCount - 1);
 					const types::usize lastChunkObjectCount = GetChunkLocalPosition(lastChunkIndex, _elementCount);
@@ -212,8 +212,8 @@ namespace triton
 		}
 	}
 
-	template <typename T>
-	void cHashTable<T>::Erase(types::u32 index)
+	template <typename TKey, typename TValue>
+	void cHashTable<TKey, TValue>::Erase(types::u32 index)
 	{
 		const types::u32 lastChunkIndex = _chunkCount - 1;
 		const types::u32 chunkIndex = GetChunkIndex(index);
@@ -232,21 +232,21 @@ namespace triton
 			DeallocateChunk(lastChunkIndex);
 	}
 
-	template <typename T>
-	types::u32 cHashTable<T>::AllocateChunk()
+	template <typename TKey, typename TValue>
+	types::u32 cHashTable<TKey, TValue>::AllocateChunk()
 	{
 		if (_chunkCount >= _maxChunkCount)
 			return 0;
 
 		const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
 		cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
-		_chunks[_chunkCount] = (T*)memoryAllocator->Allocate(_chunkByteSize, caps->memoryAlignment);
+		_chunks[_chunkCount] = (TValue*)memoryAllocator->Allocate(_chunkByteSize, caps->memoryAlignment);
 
 		return _chunkCount++;
 	}
 
-	template <typename T>
-	void cHashTable<T>::DeallocateChunk(types::u32 chunkIndex)
+	template <typename TKey, typename TValue>
+	void cHashTable<TKey, TValue>::DeallocateChunk(types::u32 chunkIndex)
 	{
 		if (chunkIndex >= _chunkCount)
 			return;
@@ -258,14 +258,14 @@ namespace triton
 		return _chunkCount++;
 	}
 
-	template <typename T>
-	types::u32 cHashTable<T>::GetChunkIndex(types::u32 globalPosition)
+	template <typename TKey, typename TValue>
+	types::u32 cHashTable<TKey, TValue>::GetChunkIndex(types::u32 globalPosition)
 	{
 		return globalPosition / _objectCountPerChunk;
 	}
 
-	template <typename T>
-	types::u32 cHashTable<T>::GetChunkLocalPosition(types::u32 chunkIndex, types::u32 globalPosition)
+	template <typename TKey, typename TValue>
+	types::u32 cHashTable<TKey, TValue>::GetChunkLocalPosition(types::u32 chunkIndex, types::u32 globalPosition)
 	{
 		const types::u32 chunkIndexBoundary = chunkIndex * _objectCountPerChunk;
 		const types::u32 localPosition = globalPosition - chunkIndexBoundary;
@@ -273,8 +273,8 @@ namespace triton
 		return localPosition;
 	}
 
-	template <typename T>
-	types::cpuword cHashTable<T>::MakeHashMask(types::usize size)
+	template <typename TKey, typename TValue>
+	types::cpuword cHashTable<TKey, TValue>::MakeHashMask(types::usize size)
 	{
 		unsigned int count = __lzcnt((unsigned int)size);
 		types::cpuword mask = (types::cpuword)((1 << (31 - count)) - 1);
