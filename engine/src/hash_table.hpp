@@ -19,7 +19,7 @@ namespace triton
 	{
 		types::usize chunkByteSize = 16 * 1024;
 		types::usize maxChunkCount = 256;
-		types::usize hashTableByteSize = 4096;
+		types::usize hashTableSize = 4096;
 	};
 
 	template <typename T>
@@ -31,10 +31,12 @@ namespace triton
 
 		template<typename... Args>
 		T* Insert(Args&&... args);
-		T* Find(const cTag& key);
+		T* Insert(const cTag& key, const T&& value);
+		T* Find(const cTag& key) const;
+		T* Find(types::u32 index) const;
 		void Erase(const cTag& key);
+		void Erase(types::u32 index);
 
-		inline const T* GetElement(types::u32 index) const;
 		inline types::usize GetElementCount() const { return _elementCount; }
 
 	private:
@@ -114,11 +116,41 @@ namespace triton
 	}
 
 	template <typename T>
-	T* cHashTable<T>::Find(const cTag& key)
+	T* cHashTable<T>::Insert(const cTag& key, const T&& value)
 	{
+		types::u32 elementChunkIndex = GetChunkIndex(_elementCount);
+		types::u32 elementLocalPosition = GetChunkLocalPosition(elementChunkIndex, _elementCount);
+
+		const types::usize chunkObjectCount = GetChunkLocalPosition(_chunkCount - 1, _elementCount);
+		if (chunkObjectCount >= _objectCountPerChunk)
+		{
+			elementChunkIndex = AllocateChunk();
+			elementLocalPosition = 0;
+		}
+
+		_elementCount += 1;
+
+		cHandle::index idx = (cHandle::index)elementLocalPosition;
+		_chunks[elementChunkIndex][idx] = std::move(value);
+		T* object = &_chunks[elementChunkIndex][idx];
+		object->_identifier = key;
+
+		sChunkElement ce;
+		ce.chunk = elementChunkIndex;
+		ce.position = elementLocalPosition;
+
+		const uint32_t hash = Hash(object->GetID(), _hashMask);
+		_hashTable[hash] = ce;
+
+		return object;
+	}
+
+	template <typename T>
+	T* cHashTable<T>::Find(const cTag& key) const
+	{
+		const types::usize chunkObjectCount = GetChunkLocalPosition(_chunkCount - 1, _elementCount);
 		const types::cpuword hash = Hash(key.GetData(), key.GetByteSize());
 		const sChunkElement& ce = _hashTable[hash];
-		const types::usize chunkObjectCount = GetChunkLocalPosition(_chunkCount - 1, _elementCount);
 		if (ce.chunk < _chunkCount && ce.position < chunkObjectCount)
 		{
 			const T* object = &_chunks[ce.chunk][ce.position];
@@ -140,6 +172,22 @@ namespace triton
 	}
 
 	template <typename T>
+	T* cHashTable<T>::Find(types::u32 index) const
+	{
+		const types::u32 chunkIndex = GetChunkIndex(index);
+
+		if (chunkIndex >= _chunkCount)
+			return nullptr;
+
+		const types::usize chunkObjectCount = GetChunkLocalPosition(info.chunk, _elementCount);
+		const types::u32 localPosition = GetChunkLocalPosition(chunkIndex, index);
+		if (localPosition >= chunkObjectCount)
+			return nullptr;
+
+		return &_chunks[chunkIndex][localPosition];
+	}
+
+	template <typename T>
 	void cHashTable<T>::Erase(const cTag& key)
 	{
 		for (types::usize i = 0; i < _chunkCount; i++)
@@ -151,8 +199,8 @@ namespace triton
 					const types::u32 lastChunkIndex = GetChunkIndex(_elementCount - 1);
 					const types::usize lastChunkObjectCount = GetChunkLocalPosition(lastChunkIndex, _elementCount);
 
-					const types::u32 lastIndex = lastChunkObjectCount - 1;
-					_chunks[i][j] = _chunks[lastChunkIndex][lastIndex];
+					const types::u32 lastLocalPosition = lastChunkObjectCount - 1;
+					_chunks[i][j] = _chunks[lastChunkIndex][lastLocalPosition];
 					_elementCount -= 1;
 
 					if (lastChunkObjectCount == 1)
@@ -165,19 +213,23 @@ namespace triton
 	}
 
 	template <typename T>
-	const T* cHashTable<T>::GetElement(types::u32 index) const
+	void cHashTable<T>::Erase(types::u32 index)
 	{
+		const types::u32 lastChunkIndex = _chunkCount - 1;
 		const types::u32 chunkIndex = GetChunkIndex(index);
+		const types::usize lastChunkObjectCount = GetChunkLocalPosition(lastChunkIndex, _elementCount);
+		const types::u32 lastLocalPosition = lastChunkObjectCount - 1;
+		const types::usize localPosition = GetChunkLocalPosition(chunkIndex, index);
+		const types::boolean isLastChunk = chunkIndex == lastChunkIndex;
 
-		if (chunkIndex >= _chunkCount)
-			return nullptr;
+		if (chunkIndex >= _chunkCount || (isLastChunk == types::K_TRUE && localPosition >= lastChunkObjectCount))
+			return;
 
-		const types::usize chunkObjectCount = GetChunkLocalPosition(info.chunk, _elementCount);
-		const types::u32 localPosition = GetChunkLocalPosition(chunkIndex, index);
-		if (localPosition >= chunkObjectCount)
-			return nullptr;
+		_chunks[chunkIndex][localPosition] = _chunks[lastChunkIndex][lastLocalPosition];
+		_elementCount -= 1;
 
-		return _chunks[chunkIndex][localPosition];
+		if (lastChunkObjectCount == 1)
+			DeallocateChunk(lastChunkIndex);
 	}
 
 	template <typename T>
