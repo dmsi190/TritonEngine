@@ -4,10 +4,11 @@
 
 namespace triton
 {
+    class iObject;
     class cContext;
     class cDataBuffer;
 
-    using EventFunction = std::function<void(cContext* context, cDataBuffer* data)>;
+    using EventFunction = std::function<void(iObject* self, cContext* context, cDataBuffer* data)>;
 
     enum class eEventType
     {

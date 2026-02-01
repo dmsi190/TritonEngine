@@ -23,7 +23,7 @@ namespace triton
         explicit cEventHandler(cContext* context, iObject* receiver, eEventType type, EventFunction&& function);
         virtual ~cEventHandler() override final = default;
 
-        void Invoke(cDataBuffer* data);
+        void Invoke(iObject* self, cDataBuffer* data);
         inline iObject* GetReceiver() const { return _receiver; }
         inline eEventType GetEventType() const { return _type; }
         inline std::shared_ptr<EventFunction> GetFunction() const { return _function; }

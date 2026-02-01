@@ -16,9 +16,9 @@ namespace triton
     cEventHandler::cEventHandler(cContext* context, iObject* receiver, eEventType type, EventFunction&& function)
         : iObject(context), _receiver(receiver), _type(type), _function(std::make_shared<EventFunction>(std::move(function))) {}
 
-    void cEventHandler::Invoke(cDataBuffer* data)
+    void cEventHandler::Invoke(iObject* self, cDataBuffer* data)
     {
-        _function->operator()(_context, data);
+        _function->operator()(self, _context, data);
     }
 
     cEventDispatcher::cEventDispatcher(cContext* context) : iObject(context)
@@ -92,6 +92,9 @@ namespace triton
             return;
 
         for (usize i = 0; i < listener->GetSize(); i++)
-            listener->At(i)->Invoke(data);
+        {
+            cEventHandler* eventHandler = listener->At(i);
+            eventHandler->Invoke(eventHandler->GetReceiver(), data);
+        }
     }
 }
