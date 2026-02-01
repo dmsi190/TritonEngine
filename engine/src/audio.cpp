@@ -12,6 +12,8 @@ using namespace types;
 
 namespace triton
 {
+	using namespace ecs;
+
 	cSound::cSound(cContext* context, eFormat format, const std::string& path) : iObject(context), _audioBackend(context->GetSubsystem<cAudio>()->GetAPI())
 	{
 		const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
@@ -103,7 +105,7 @@ namespace triton
 		}
 	}
 
-	void cAudio::OnFrameUpdate(cContext* context, cDataBuffer* data) {}
+	void cAudio::OnFrameUpdate(cStack<ecs::cScene>* scenes) {}
 
 	cCacheObject<cSound> cAudio::CreateSound(const std::string& id, cSound::eFormat format, const std::string& path)
 	{

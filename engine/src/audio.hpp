@@ -3,6 +3,7 @@
 #pragma once
 
 #include "category.hpp"
+#include "ecs.hpp"
 #include "types.hpp"
 
 namespace triton
@@ -72,6 +73,10 @@ namespace triton
 		types::u32 _buffer = 0;
 	};
 
+	struct sSound
+	{
+	};
+
 	class cAudio : public iObject
 	{
 		TRITON_OBJECT(cAudio)
@@ -87,7 +92,11 @@ namespace triton
 		explicit cAudio(cContext* context);
 		virtual ~cAudio() override final;
 
-		void OnFrameUpdate(cContext* context, cDataBuffer* data);
+		void OnFrameUpdate(cStack<ecs::cScene>* scenes);
+
+		void Play(ecs::entity ent);
+		void Pause(ecs::entity ent);
+		void Stop(ecs::entity ent);
 
 		cCacheObject<cSound> CreateSound(const std::string& id, cSound::eFormat format, const std::string& path);
 		cCacheObject<cSound> FindSound(const std::string& id);
