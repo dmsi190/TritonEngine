@@ -15,11 +15,6 @@ namespace triton::ecs
 
 	using entity = types::u64;
 	static constexpr entity kInvalidEntity = 0;
-	inline entity CreateEntity()
-	{
-		static entity next = kInvalidEntity + 1;
-		return next;
-	}
 
 	struct sComponent {};
 
@@ -54,9 +49,14 @@ namespace triton::ecs
 
 	class cScene : public iObject
 	{
+		// TODO_TRITON: Create component storages for each component type here
+		// cComponentStorage<sTransform> _transforms;
+
 	public:
 		explicit cScene(cContext* context);
 		virtual ~cScene() override final = default;
+
+		entity CreateEntity() const;
 	};
 
 	template <typename TComponent>
@@ -107,4 +107,13 @@ namespace triton::ecs
 
 	template <typename TComponent>
 	cSystem<TComponent>::cSystem(cContext* context) : iObject(context) {}
+
+	cScene::cScene(cContext* context) : iObject(context) {}
+
+	entity cScene::CreateEntity() const
+	{
+		static entity next = kInvalidEntity + 1;
+
+		return next;
+	}
 }
