@@ -103,6 +103,8 @@ namespace triton
 		}
 	}
 
+	void cAudio::OnFrameUpdate(cContext* context, cDataBuffer* data) {}
+
 	cCacheObject<cSound> cAudio::CreateSound(const std::string& id, cSound::eFormat format, const std::string& path)
 	{
 		return _sounds->Create(id, _context, format, path);

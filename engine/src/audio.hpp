@@ -3,7 +3,6 @@
 #pragma once
 
 #include "category.hpp"
-#include "cache.hpp"
 #include "types.hpp"
 
 namespace triton
@@ -11,6 +10,7 @@ namespace triton
 	class cContext;
 	class iSoundAPI;
 	class cOpenALSoundAPI;
+	class cDataBuffer;
 
 	struct sWAVStructure
 	{
@@ -86,6 +86,8 @@ namespace triton
 	public:
 		explicit cAudio(cContext* context);
 		virtual ~cAudio() override final;
+
+		void OnFrameUpdate(cContext* context, cDataBuffer* data);
 
 		cCacheObject<cSound> CreateSound(const std::string& id, cSound::eFormat format, const std::string& path);
 		cCacheObject<cSound> FindSound(const std::string& id);
