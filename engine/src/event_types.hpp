@@ -4,13 +4,19 @@
 
 namespace triton
 {
+    class cContext;
     class cDataBuffer;
 
-    using EventFunction = std::function<void(cDataBuffer* const data)>;
+    using EventFunction = std::function<void(cContext* context, cDataBuffer* data)>;
 
     enum class eEventType
     {
         NONE,
-        KEY_PRESS
+
+        KEY_PRESS,
+
+        FRAME_BEGIN,
+        FRAME_UPDATE,
+        FRAME_END
     };
 }

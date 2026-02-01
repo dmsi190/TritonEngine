@@ -18,7 +18,7 @@ namespace triton
 
     void cEventHandler::Invoke(cDataBuffer* data)
     {
-        _function->operator()(data);
+        _function->operator()(_context, data);
     }
 
     cEventDispatcher::cEventDispatcher(cContext* context) : iObject(context)
