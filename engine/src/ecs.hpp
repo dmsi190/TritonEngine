@@ -5,47 +5,62 @@
 #include "cache.hpp"
 #include "engine.hpp"
 #include "application.hpp"
+#include "hash_table.hpp"
+#include "stack.hpp"
 #include "types.hpp"
 
-namespace triton
+namespace triton::ecs
 {
-	class cEntity : public iObject
+	class cContext;
+
+	using entity = types::u64;
+	static constexpr entity kInvalidEntity = 0;
+	inline entity CreateEntity()
 	{
-		cHashTable<cTag> _componentIndices;
-	};
+		static entity next = kInvalidEntity + 1;
+		return next;
+	}
 
 	struct sComponent {};
 
-	template <typename T>
+	template <typename TComponent>
 	class cComponentStorage : public iObject
 	{
-		static_assert(std::is_base_of_v<sComponent, T>, "T must inherit from sComponent");
+		static_assert(std::is_base_of_v<sComponent, TComponent>, "TComponent must inherit from sComponent");
 
-		cHashTable<T>* _components = nullptr;
+		cStack<TComponent>* _data = nullptr;
+		cHashTable<entity, types::u32>* _indices = nullptr;
 
 	public:
 		explicit cComponentStorage(cContext* context);
 		virtual ~cComponentStorage() override final = default;
 
-		void Add(const T&& component);
-		T* Get(types::u32 index);
-		void Remove(types::u32 index);
+		TComponent* Create(entity ent);
+		TComponent* Get(entity ent);
+		void Destroy(entity ent);
 	};
 
-	template <typename T>
+	template <typename TComponent>
 	class cSystem : public iObject
 	{
 	public:
 		explicit cSystem(cContext* context);
 		virtual ~cSystem() override final = default;
 
-		virtual void Init(const cComponentStorage<T>& storage) = 0;
-		virtual void Update(const cComponentStorage<T>& storage) = 0;
-		virtual void Shutdown(const cComponentStorage<T>& storage) = 0;
+		virtual void Init(const cComponentStorage<TComponent>& storage) = 0;
+		virtual void Update(const cComponentStorage<TComponent>& storage) = 0;
+		virtual void Shutdown(const cComponentStorage<TComponent>& storage) = 0;
 	};
 
-	template <typename T>
-	cComponentStorage<T>::cComponentStorage(cContext* context)
+	class cScene : public iObject
+	{
+	public:
+		explicit cScene(cContext* context);
+		virtual ~cScene() override final = default;
+	};
+
+	template <typename TComponent>
+	cComponentStorage<TComponent>::cComponentStorage(cContext* context)
 	{
 		const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
 
@@ -53,33 +68,43 @@ namespace triton
 		cad.chunkByteSize = caps->hashTableChunkByteSize;
 		cad.maxChunkCount = caps->hashTableMaxChunkCount;
 		cad.hashTableSize = caps->hashTableSize;
-		_components = _context->Create<cHashTable<T>>(_context, cad);
+
+		_data = _context->Create<cStack<TComponent>>(_context, cad);
+		_indices = _context->Create<cHashTable<entity, types::u32>>(_context, cad);
 	}
 
-	template <typename T>
-	cComponentStorage<T>::~cComponentStorage()
+	template <typename TComponent>
+	cComponentStorage<TComponent>::~cComponentStorage()
 	{
-		_context->Destroy<cHashTable<T>>(_components);
+		_context->Destroy<cHashTable<entity, types::u32>>(_indices);
+		_context->Destroy<cStack<TComponent>>(_data);
 	}
 
-	template <typename T>
-	void cComponentStorage<T>::Add(const T&& component)
+	template <typename TComponent>
+	TComponent* cComponentStorage<TComponent>::Create(entity ent)
 	{
-		_components->Insert(cIdentifier::Generate(T::GetTypeStatic()), component);
+		_indices->Insert(ent, _data->GetSize());
+		TComponent* component = _data->Push();
+
+		return component;
 	}
 
-	template <typename T>
-	T* cComponentStorage<T>::Get(types::u32 index)
+	template <typename TComponent>
+	TComponent* cComponentStorage<TComponent>::Get(entity ent)
 	{
-		return _components->Find(index);
+		types::u32 index = _indices->Find(ent);
+		TComponent* component = _data->At(index);
+
+		return component;
 	}
 
-	template <typename T>
-	void cComponentStorage<T>::Remove(types::u32 index)
+	template <typename TComponent>
+	void cComponentStorage<TComponent>::Destroy(entity ent)
 	{
-		return _components->Erase(index);
+		types::u32 index = _indices->Find(ent);
+		_data->Erase(index);
 	}
 
-	template <typename T>
-	cSystem<T>::cSystem(cContext* context) : iObject(context) {}
+	template <typename TComponent>
+	cSystem<TComponent>::cSystem(cContext* context) : iObject(context) {}
 }
