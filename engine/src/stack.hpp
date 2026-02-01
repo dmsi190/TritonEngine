@@ -33,6 +33,8 @@ namespace triton
 	template <typename TValue>
 	class cStack : public iObject
 	{
+		TRITON_OBJECT(cStack)
+
 	public:
 		static_assert(std::is_base_of_v<cStackValue, TValue>, "TValue must inherit from cStackValue");
 

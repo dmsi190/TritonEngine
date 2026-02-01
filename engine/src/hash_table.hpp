@@ -27,6 +27,8 @@ namespace triton
 	template <typename TKey, typename TValue>
 	class cHashTable : public iObject
 	{
+		TRITON_OBJECT(cHashTable)
+
 	public:
 		static_assert(std::is_base_of_v<cStackValue, TValue>, "TValue must inherit from cStackValue");
 
