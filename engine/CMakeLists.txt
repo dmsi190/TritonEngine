@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.25.1)
 
 project(RealWareEngine)
 
-set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD 17)
 
 file(GLOB_RECURSE SOURCE_FILES thirdparty/lodepng/lodepng.cpp src/*.cpp src/*.hpp)
 
