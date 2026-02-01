@@ -29,7 +29,7 @@ namespace triton
 		inline types::usize GetElementCount() const { return _objects->GetElementCount(); }
 
 	private:
-		cCache<T>* _objects = nullptr;
+		cHashTable<T>* _objects = nullptr;
 	};
 
 	template <typename T>
