@@ -58,7 +58,9 @@ namespace triton
 		// Subscribe systems to core events
 		audioSystem->Subscribe(
 			eEventType::FRAME_UPDATE,
-			[audioSystem] (cContext* context, cDataBuffer* data) { audioSystem->OnFrameUpdate(context, data); }
+			[audioSystem] (iObject* self, cContext* context, cDataBuffer* data) {
+				audioSystem->OnFrameUpdate(context->GetScenes());
+			}
 		);
 
 		// Create texture manager
