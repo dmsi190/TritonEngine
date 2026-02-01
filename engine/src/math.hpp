@@ -170,6 +170,6 @@ namespace triton
 		virtual ~cMath() override final = default;
 
 		static types::f32 DegreesToRadians(types::f32 degrees);
-		static types::cpuword Hash(const types::u8* data, types::usize dataByteSize);
+		static types::qword Hash(const types::u8* data, types::usize dataByteSize);
 	};
 }

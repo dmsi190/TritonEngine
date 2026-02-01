@@ -203,7 +203,7 @@ namespace triton
 		return glm::radians(degrees);
 	}
 
-	cpuword cMath::Hash(const u8* data, usize dataByteSize)
+	qword cMath::Hash(const u8* data, usize dataByteSize)
 	{
 		u64 hash = 0x9e3779b97f4a7c15ull;
 		while (dataByteSize >= 4)
