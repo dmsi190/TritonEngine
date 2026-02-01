@@ -2,7 +2,6 @@
 
 #include <type_traits>
 #include "object.hpp"
-#include "cache.hpp"
 #include "engine.hpp"
 #include "application.hpp"
 #include "hash_table.hpp"
@@ -92,9 +91,6 @@ namespace triton::ecs
 		types::u32 index = _indices->Find(ent);
 		_data->Erase(index);
 	}
-
-	template <typename TComponent>
-	cSystem<TComponent>::cSystem(cContext* context) : iObject(context) {}
 
 	cScene::cScene(cContext* context) : iObject(context) {}
 
