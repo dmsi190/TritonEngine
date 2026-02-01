@@ -38,13 +38,11 @@ namespace triton::ecs
 	template <typename TComponent>
 	class cSystem : public iObject
 	{
+		TRITON_OBJECT(cSystem)
+
 	public:
 		explicit cSystem(cContext* context);
 		virtual ~cSystem() override final = default;
-
-		virtual void Init(const cComponentStorage<TComponent>& storage) = 0;
-		virtual void Update(const cComponentStorage<TComponent>& storage) = 0;
-		virtual void Shutdown(const cComponentStorage<TComponent>& storage) = 0;
 	};
 
 	class cScene : public iObject
