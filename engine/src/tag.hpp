@@ -23,7 +23,8 @@ namespace triton
         explicit cTag(const types::u8* chars, types::usize charsByteSize);
         ~cTag() = default;
 
-        types::boolean Compare(const std::string& text);
+        bool operator==(const cTag& rhs);
+        bool operator==(const std::string& rhs);
 
         inline const chars& GetData() const { return _data; }
         inline types::usize GetByteSize() const { return _byteSize; }

@@ -19,18 +19,32 @@ namespace triton
 		CopyChars(chars, charsByteSize);
 	}
 
-	boolean cTag::Compare(const std::string& text)
+	bool cTag::operator==(const cTag& rhs)
 	{
-		if (text.size() != _byteSize)
-			return K_FALSE;
+		if (rhs.GetByteSize() != _byteSize)
+			return false;
 
 		for (usize i = 0; i < _byteSize; i++)
 		{
-			if (text[i] != _data[i])
-				return K_FALSE;
+			if (rhs.GetData()[i] != _data[i])
+				return false;
 		}
 
-		return K_TRUE;
+		return true;
+	}
+
+	bool cTag::operator==(const std::string& rhs)
+	{
+		if (rhs.size() != _byteSize)
+			return false;
+
+		for (usize i = 0; i < _byteSize; i++)
+		{
+			if (rhs[i] != _data[i])
+				return false;
+		}
+
+		return true;
 	}
 
 	void cTag::FillZeros()
