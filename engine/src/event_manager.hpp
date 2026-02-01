@@ -3,12 +3,9 @@
 #pragma once
 
 #include <memory>
-#include <queue>
-#include <unordered_map>
 #include <functional>
-#include <vector>
 #include "object.hpp"
-#include "cache.hpp"
+#include "hash_table.hpp"
 #include "types.hpp"
 
 namespace triton
@@ -43,7 +40,7 @@ namespace triton
 
     public:
         explicit cEventDispatcher(cContext* context);
-        virtual ~cEventDispatcher() override final = default;
+        virtual ~cEventDispatcher() override final;
 
         void Subscribe(iObject* receiver, eEventType type, EventFunction&& function);
         void Unsubscribe(iObject* receiver, eEventType type);
@@ -51,6 +48,6 @@ namespace triton
         void Send(eEventType type, cDataBuffer* data);
 
     private:
-        std::unordered_map<eEventType, std::shared_ptr<cCache<cEventHandler>>> _listeners;
+        cHashTable<eEventType, cStack<cEventHandler>>* _listeners = nullptr;
     };
 }

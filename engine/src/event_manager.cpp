@@ -13,39 +13,65 @@ using namespace types;
 
 namespace triton
 {
-    cEventHandler::cEventHandler(cContext* context, iObject* receiver, eEventType type, EventFunction&& function) : iObject(context), _receiver(receiver), _type(type), _function(std::make_shared<EventFunction>(std::move(function))) {}
+    cEventHandler::cEventHandler(cContext* context, iObject* receiver, eEventType type, EventFunction&& function)
+        : iObject(context), _receiver(receiver), _type(type), _function(std::make_shared<EventFunction>(std::move(function))) {}
 
     void cEventHandler::Invoke(cDataBuffer* data)
     {
         _function->operator()(data);
     }
 
-    cEventDispatcher::cEventDispatcher(cContext* context) : iObject(context) {}
+    cEventDispatcher::cEventDispatcher(cContext* context) : iObject(context)
+    {
+        const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
+
+        sChunkAllocatorDescriptor cad = {};
+        cad.chunkByteSize = caps->hashTableChunkByteSize;
+        cad.maxChunkCount = caps->hashTableMaxChunkCount;
+        cad.hashTableSize = caps->hashTableSize;
+
+        _listeners = _context->Create<cHashTable<eEventType, cStack<cEventHandler>>>(_context, cad);
+    }
+
+    cEventDispatcher::~cEventDispatcher()
+    {
+        for (usize i = 0; i < _listeners->GetSize(); i++)
+            _context->Destroy<cStack<cEventHandler>>(_listeners->Find(i));
+
+        _context->Destroy<cHashTable<eEventType, cStack<cEventHandler>>>(_listeners);
+    }
 
     void cEventDispatcher::Subscribe(iObject* receiver, eEventType type, EventFunction&& function)
     {
-        const auto listener = _listeners.find(type);
-        if (listener == _listeners.end())
+        cStack<cEventHandler>* listener = _listeners->Find(type);
+        if (listener == nullptr)
         {
             const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
-            _listeners.insert({ type, std::make_shared<cCache<cEventHandler>>(_context, caps->maxEventPerTypeCount) });
+            
+            sChunkAllocatorDescriptor cad = {};
+            cad.chunkByteSize = caps->hashTableChunkByteSize;
+            cad.maxChunkCount = caps->hashTableMaxChunkCount;
+            cad.hashTableSize = caps->hashTableSize;
+
+            listener = _context->Create<cStack<cEventHandler>>(_context, cad);
+            _listeners->Insert(type, listener);
         }
 
-        _listeners[type]->Create(receiver->GetID(), _context, receiver, type, std::move(function));
+        listener->Push(_context, receiver, type, std::move(function));
     }
 
     void cEventDispatcher::Unsubscribe(iObject* receiver, eEventType type)
     {
-        if (_listeners.find(type) == _listeners.end())
+        cStack<cEventHandler>* listener = _listeners->Find(type);
+        if (listener == nullptr)
             return;
 
-        auto& events = _listeners[type];
-        for (usize i = 0; i < events->GetElementCount(); i++)
+        for (usize i = 0; i < listener->GetSize(); i++)
         {
-            const iObject* listenerReceiver = events->GetElement(i);
+            const iObject* listenerReceiver = listener->At(i);
             if (listenerReceiver == receiver)
             {
-                events->Destroy(listenerReceiver->GetID());
+                listener->Erase(i);
 
                 return;
             }
@@ -61,11 +87,11 @@ namespace triton
 
     void cEventDispatcher::Send(eEventType type, cDataBuffer* data)
     {
-        if (_listeners.find(type) == _listeners.end())
+        cStack<cEventHandler>* listener = _listeners->Find(type);
+        if (listener == nullptr)
             return;
 
-        auto& events = _listeners[type];
-        for (usize i = 0; i < events->GetElementCount(); i++)
-            events->GetElement(i)->Invoke(data);
+        for (usize i = 0; i < listener->GetSize(); i++)
+            listener->At(i)->Invoke(data);
     }
 }
