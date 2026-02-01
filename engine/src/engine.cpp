@@ -50,8 +50,16 @@ namespace triton
 		_context->RegisterSubsystem(new cThread(_context));
 		_context->RegisterSubsystem(new cTime(_context));
 		_context->RegisterSubsystem(new cEventDispatcher(_context));
-		_context->RegisterSubsystem(new cAudio(_context));
 		_context->RegisterSubsystem(new cMath(_context));
+
+		// Create systems
+		cAudio* audioSystem = _context->Create<cAudio>(_context);
+
+		// Subscribe systems to core events
+		audioSystem->Subscribe(
+			eEventType::FRAME_UPDATE,
+			[audioSystem] (cContext* context, cDataBuffer* data) { audioSystem->OnFrameUpdate(context, data); }
+		);
 
 		// Create texture manager
 		cTextureAtlas* texture = _context->GetSubsystem<cTextureAtlas>();
