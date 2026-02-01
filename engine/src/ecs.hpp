@@ -35,16 +35,6 @@ namespace triton::ecs
 		void Destroy(entity ent);
 	};
 
-	template <typename TComponent>
-	class cSystem : public iObject
-	{
-		TRITON_OBJECT(cSystem)
-
-	public:
-		explicit cSystem(cContext* context);
-		virtual ~cSystem() override final = default;
-	};
-
 	class cScene : public iObject
 	{
 		// TODO_TRITON: Create component storages for each component type here
