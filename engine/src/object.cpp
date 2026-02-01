@@ -20,11 +20,6 @@ namespace triton
         return tag;
     }
 
-    iObject::~iObject()
-    {
-        delete _identifier;
-    }
-
     void iObject::Subscribe(eEventType type, EventFunction&& function)
     {
         cEventDispatcher* dispatcher = _context->GetSubsystem<cEventDispatcher>();
