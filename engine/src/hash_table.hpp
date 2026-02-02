@@ -23,8 +23,12 @@ namespace triton
 
 		friend class cHashTable<TKey, TValue>;
 
-		TKey key = {};
-		TValue value = {};
+		TKey _key = {};
+		TValue _value = {};
+
+	public:
+		explicit cHashTablePair(cContext* context, const TKey& key, TValue&& value);
+		virtual ~cHashTablePair() override final = default;
 	};
 
 	template <typename TKey, typename TValue>
@@ -40,7 +44,7 @@ namespace triton
 
 		template<typename... Args>
 		TValue* Insert(const TKey& key, Args&&... args);
-		TValue* Insert(const TKey& key, const TValue&& value);
+		TValue* Insert(const TKey& key, TValue&& value);
 		TValue* Find(const TKey& key) const;
 		TValue* Find(types::u32 index) const;
 		void Erase(const TKey& key);
@@ -57,6 +61,10 @@ namespace triton
 		types::qword _hashMask = 0;
 		cStackValue* _hashTable = nullptr;
 	};
+
+	template <typename TKey, typename TValue>
+	cHashTablePair<TKey, TValue>::cHashTablePair(cContext* context, const TKey& key, TValue&& value)
+		: iObject(context), _key(key), _value(std::move(value)) {}
 
 	template <typename TKey, typename TValue>
 	cHashTable<TKey, TValue>::cHashTable(cContext* context, const sChunkAllocatorDescriptor& allocatorDesc) : iObject(context)
@@ -84,12 +92,14 @@ namespace triton
 	template <typename... Args>
 	TValue* cHashTable<TKey, TValue>::Insert(const TKey& key, Args&&... args)
 	{
-		cHashTablePair<TKey, TValue>* pair = _elements->Push(std::forward<Args>(args)...);
+		TValue value(std::forward<Args>(args)...);
+		cHashTablePair<TKey, TValue> pair(_context, key, std::move(value));
+		cHashTablePair<TKey, TValue>* pPair = _elements->Push(std::move(pair));
 
-		if (pair == nullptr)
+		if (pPair == nullptr)
 			return nullptr;
 
-		TValue* object = &pair->value;
+		TValue* object = &pPair->_value;
 
 		HashPair(key, object);
 
@@ -97,14 +107,15 @@ namespace triton
 	}
 
 	template <typename TKey, typename TValue>
-	TValue* cHashTable<TKey, TValue>::Insert(const TKey& key, const TValue&& value)
+	TValue* cHashTable<TKey, TValue>::Insert(const TKey& key, TValue&& value)
 	{
-		cHashTablePair<TKey, TValue>* pair = _elements->Push(value);
+		cHashTablePair<TKey, TValue> pair(_context, std::move(key), std::move(value));
+		cHashTablePair<TKey, TValue>* pPair = _elements->Push(std::move(pair));
 
-		if (pair == nullptr)
+		if (pPair == nullptr)
 			return nullptr;
 
-		TValue* object = &pair->value;
+		TValue* object = &pPair->value;
 
 		HashPair(key, object);
 
@@ -117,14 +128,14 @@ namespace triton
 		const types::qword hash = cMath::Hash<TKey>(key, _hashMask);
 		const cStackValue& sv = _hashTable[hash];
 		cHashTablePair<TKey, TValue>* pair = _elements->At(sv);
-		if (pair != nullptr && key == pair->key)
-			return &pair->value;
+		if (pair != nullptr && key == pair->_key)
+			return &pair->_value;
 
 		for (types::usize i = 0; i < _elements->GetSize(); i++)
 		{
 			cHashTablePair<TKey, TValue>* pair = _elements->At(i);
-			if (pair != nullptr && key == pair->key)
-				return &pair->value;
+			if (pair != nullptr && key == pair->_key)
+				return &pair->_value;
 		}
 
 		return nullptr;
@@ -138,7 +149,7 @@ namespace triton
 		if (pair == nullptr)
 			return nullptr;
 		else
-			return &pair->value;
+			return &pair->_value;
 	}
 
 	template <typename TKey, typename TValue>
@@ -147,13 +158,13 @@ namespace triton
 		const types::qword hash = cMath::Hash<TKey>(key, _hashMask);
 		const cStackValue& sv = _hashTable[hash];
 		const cHashTablePair<TKey, TValue>* pair = _elements->At(sv);
-		if (pair != nullptr && key == pair->key)
+		if (pair != nullptr && key == pair->_key)
 			_elements->Erase(sv.globalPosition);
 
 		for (types::usize i = 0; i < _elements->GetSize(); i++)
 		{
 			const cHashTablePair<TKey, TValue>* pair = _elements->At(i);
-			if (pair != nullptr && key == pair->key)
+			if (pair != nullptr && key == pair->_key)
 				_elements->Erase(i);
 		}
 	}
