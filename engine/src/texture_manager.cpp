@@ -28,7 +28,7 @@ namespace triton
         }
     }
 
-    cTextureAtlas::cTextureAtlas(cContext* context) : iObject(context), _textures(context), _gfx(_context->GetSubsystem<cGraphics>()->GetAPI()) {}
+    cTextureAtlas::cTextureAtlas(cContext* context) : iObject(context), _gfx(_context->GetSubsystem<cGraphics>()->GetAPI()) {}
 
     cTextureAtlas::~cTextureAtlas()
     {
@@ -36,7 +36,8 @@ namespace triton
             _gfx->DestroyTexture(_atlas);
     }
 
-    cTextureAtlasTexture* cTextureAtlas::CreateTexture(const std::string& id, const glm::vec2& size, usize channels, const u8* data)
+    // TODO: New implementation of texture creation
+    /*cTextureAtlasTexture* cTextureAtlas::CreateTexture(const std::string& id, const glm::vec2& size, usize channels, const u8* data)
     {
         const usize width = size.x;
         const usize height = size.y;
@@ -134,7 +135,7 @@ namespace triton
     void cTextureAtlas::DestroyTexture(const std::string& id)
     {
         _textures.Delete(id);
-    }
+    }*/
 
     cTexture* cTextureAtlas::GetAtlas() const
     {
