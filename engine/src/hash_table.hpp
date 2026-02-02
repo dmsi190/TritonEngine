@@ -52,7 +52,7 @@ namespace triton
 		sChunkAllocatorDescriptor _allocatorDesc = {};
 		cStack<cHashTablePair<TKey, TValue>>* _elements;
 		types::usize _hashTableSize = 0;
-		types::cpuword _hashMask = 0;
+		types::qword _hashMask = 0;
 		cStackValue* _hashTable = nullptr;
 	};
 
@@ -112,7 +112,7 @@ namespace triton
 	template <typename TKey, typename TValue>
 	TValue* cHashTable<TKey, TValue>::Find(const TKey& key) const
 	{
-		const types::qword hash = cMath::Hash(key.GetData(), key.GetByteSize());
+		const types::qword hash = cMath::Hash<TKey>(key, _hashMask);
 		const cStackValue& sv = _hashTable[hash];
 		cHashTablePair<TKey, TValue>* pair = _elements->At(sv);
 		if (pair != nullptr && key == pair->key)
@@ -142,7 +142,7 @@ namespace triton
 	template <typename TKey, typename TValue>
 	void cHashTable<TKey, TValue>::Erase(const TKey& key)
 	{
-		const types::qword hash = cMath::Hash(key.GetData(), key.GetByteSize());
+		const types::qword hash = cMath::Hash<TKey>(key, _hashMask);
 		const cStackValue& sv = _hashTable[hash];
 		const cHashTablePair<TKey, TValue>* pair = _elements->At(sv);
 		if (pair != nullptr && key == pair->key)
@@ -170,7 +170,7 @@ namespace triton
 		sv.position = value->position;
 		sv.globalPosition = value->globalPosition;
 
-		const types::u32 hash = cMath::Hash(key, _hashMask);
+		const types::u32 hash = cMath::Hash<TKey>(key, _hashMask);
 		_hashTable[hash] = sv;
 	}
 }

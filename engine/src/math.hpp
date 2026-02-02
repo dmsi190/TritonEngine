@@ -188,11 +188,38 @@ namespace triton
 	{
 		TRITON_OBJECT(cMath)
 
+		static types::qword HashBytes(const types::u8* data, types::usize dataByteSize, types::qword mask);
+
 	public:
 		explicit cMath(cContext* context);
 		virtual ~cMath() override final = default;
 
 		static types::f32 DegreesToRadians(types::f32 degrees);
-		static types::qword Hash(const types::u8* data, types::usize dataByteSize);
+
+		template <typename TValue>
+		static types::qword Hash(const TValue& value, types::qword mask);
 	};
+
+	template <typename TValue>
+	types::qword cMath::Hash(const TValue& value, types::qword mask)
+	{
+		else if constexpr (std::is_enum_v<TValue>)
+		{
+			const types::usize byteSize = sizeof(TValue);
+
+			return HashBytes(&value, byteSize, mask);
+		}
+		else if constexpr (std::is_same_v<TValue, cTag>)
+		{
+			return HashBytes(value.GetData(), value.GetByteSize(), mask);
+		}
+		else if constexpr (std::is_same_v<TValue, std::string>)
+		{
+			return HashBytes(value.c_str(), value.size(), mask);
+		}
+		else
+		{
+			static_assert(sizeof(TValue) == 0, "Error: unsupported key type");
+		}
+	}
 }

@@ -203,19 +203,19 @@ namespace triton
 		return glm::radians(degrees);
 	}
 
-	qword cMath::Hash(const u8* data, usize dataByteSize)
+	qword cMath::HashBytes(const u8* data, usize dataByteSize, qword mask)
 	{
-		u64 hash = 0x9e3779b97f4a7c15ull;
+		qword hash = 0x9e3779b97f4a7c15ull;
 		while (dataByteSize >= 4)
 		{
-			hash = (hash ^ (((u64)(*data++) * 0x9e3779b9ull) >> 32)) * 0xbf58476d1ce4e5b9ull;
+			hash = (hash ^ (((qword)(*data++) * 0x9e3779b9ull) >> 32)) * 0xbf58476d1ce4e5b9ull;
 			dataByteSize -= 4;
 		}
 
-		u32 tail = 0;
+		qword tail = 0;
 		memcpy(&tail, data, dataByteSize);
 		hash ^= tail;
 
-		return (cpuword)hash;
+		return hash & mask;
 	}
 }
