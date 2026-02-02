@@ -203,7 +203,7 @@ namespace triton
 	template <typename TValue>
 	types::qword cMath::Hash(const TValue& value, types::qword mask)
 	{
-		else if constexpr (std::is_enum_v<TValue>)
+		if constexpr (std::is_enum_v<TValue>)
 		{
 			const types::usize byteSize = sizeof(TValue);
 
