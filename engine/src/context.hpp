@@ -59,7 +59,7 @@ namespace triton
 		const ClassType type = T::GetTypeStatic();
 		const auto it = _factories.find(type);
 		if (it != _factories.end())
-			return (T*)(((cFactory<T>*)it->second)->Create(std::forward<Args>(args)...).object); // TODO: smth with FactoryObject<T>
+			return ((cFactory<T>*)it->second)->Create(std::forward<Args>(args)...); // TODO: smth with FactoryObject<T>
 		else
 			return nullptr;
 	}
@@ -70,7 +70,7 @@ namespace triton
 		const ClassType type = T::GetTypeStatic();
 		const auto it = _factories.find(type);
 		if (it != _factories.end())
-			return (T*)(((cFactory<T>*)it->second)->Create(ptr, index, std::forward<Args>(args)...).object);  // TODO: smth with FactoryObject<T>
+			return ((cFactory<T>*)it->second)->Create(ptr, index, std::forward<Args>(args)...);  // TODO: smth with FactoryObject<T>
 		else
 			return nullptr;
 	}
