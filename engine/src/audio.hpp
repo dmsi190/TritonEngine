@@ -8,7 +8,6 @@
 
 namespace triton
 {
-	class cContext;
 	class iSoundAPI;
 	class cOpenALSoundAPI;
 	class cDataBuffer;
@@ -89,25 +88,19 @@ namespace triton
 		};
 
 	public:
-		explicit cAudio(cContext* context);
+		explicit cAudio(cContext* context, API api);
 		virtual ~cAudio() override final;
 
 		void OnFrameUpdate(cStack<ecs::cScene>* scenes);
 
-		void Play(ecs::entity ent);
+		void Play(ecs::entity ent); // TODO: lazy load sound from file in Play()
 		void Pause(ecs::entity ent);
 		void Stop(ecs::entity ent);
 
-		cCacheObject<cSound> CreateSound(const std::string& id, cSound::eFormat format, const std::string& path);
-		cCacheObject<cSound> FindSound(const std::string& id);
-		void DestroySound(const std::string& id);
-
 		inline iSoundAPI* GetAPI() const { return _audioBackend; }
-		void SetAPI(API api);
 
 	private:
 		API _audioBackendAPI = API::NONE;
 		iSoundAPI* _audioBackend = nullptr;
-		cCache<cSound>* _sounds;
 	};
 }

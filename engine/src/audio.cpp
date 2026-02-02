@@ -84,10 +84,18 @@ namespace triton
 		_audioBackend->Destroy(this);
 	}
 
-	cAudio::cAudio(cContext* context) : iObject(context)
+	cAudio::cAudio(cContext* context, API api) : iObject(context), _audioBackendAPI(api)
 	{
-		const sCapabilities* caps = context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
-		_sounds = _context->Create<cCache<cSound>>(_context, caps->maxSoundCount);
+		if (api == API::NONE)
+		{
+			Print("Error: sound API not selected!");
+
+			return;
+		}
+		else if (api == API::OAL)
+		{
+			_audioBackend = new cOpenALSoundAPI(_context);
+		}
 	}
 
 	cAudio::~cAudio()
@@ -106,35 +114,4 @@ namespace triton
 	}
 
 	void cAudio::OnFrameUpdate(cStack<ecs::cScene>* scenes) {}
-
-	cCacheObject<cSound> cAudio::CreateSound(const std::string& id, cSound::eFormat format, const std::string& path)
-	{
-		return _sounds->Create(id, _context, format, path);
-	}
-
-	cCacheObject<cSound> cAudio::FindSound(const std::string& id)
-	{
-		return _sounds->Find(id);
-	}
-
-	void cAudio::DestroySound(const std::string& id)
-	{
-		_sounds->Destroy(id);
-	}
-
-	void cAudio::SetAPI(API api)
-	{
-		_audioBackendAPI = api;
-
-		if (api == API::NONE)
-		{
-			Print("Error: sound API not selected!");
-
-			return;
-		}
-		else if (api == API::OAL)
-		{
-			_audioBackend = new cOpenALSoundAPI(_context);
-		}
-	}
 }
