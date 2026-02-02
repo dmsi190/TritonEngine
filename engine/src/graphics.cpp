@@ -346,7 +346,7 @@ namespace triton
 
     sVertexBufferGeometry* cGraphics::CreateGeometry(eCategory format, usize verticesByteSize, const void* vertices, usize indicesByteSize, const void* indices)
     {
-        sVertexBufferGeometry* geometry = _context->Create<sVertexBufferGeometry>();
+        sVertexBufferGeometry* geometry = _context->Create<sVertexBufferGeometry>(_context);
 
         memcpy((void*)((usize)_vertices + _verticesByteSize), vertices, verticesByteSize);
         memcpy((void*)((usize)_indices + _indicesByteSize), indices, indicesByteSize);
@@ -394,7 +394,7 @@ namespace triton
         cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
         const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
 
-        sPrimitive* primitiveObject = _context->Create<sPrimitive>();
+        sPrimitive* primitiveObject = _context->Create<sPrimitive>(_context);
 
         if (primitive == eCategory::PRIMITIVE_TRIANGLE)
         {

@@ -16,6 +16,7 @@ namespace triton
     class cApplication;
     class cGameObject;
     class cTextureAtlasTexture;
+    class cContext;
     struct sBuffer;
     struct sVertexArray;
     struct sRenderTarget;
@@ -35,6 +36,8 @@ namespace triton
     {
         TRITON_OBJECT(sVertexBufferGeometry)
 
+        explicit sVertexBufferGeometry(cContext* context) : iObject(context) {} // TODO: Temporary solution
+
         types::usize _vertexCount = 0;
         types::usize _indexCount = 0;
         void* _vertexPtr = nullptr;
@@ -47,6 +50,8 @@ namespace triton
     struct sPrimitive : public iObject
     {
         TRITON_OBJECT(sPrimitive)
+
+        explicit sPrimitive(cContext* context) : iObject(context) {} // TODO: Temporary solution
 
         sVertex* _vertices = nullptr;
         index* _indices = nullptr;
