@@ -35,12 +35,12 @@ namespace triton
     void iObject::Send(eEventType type)
     {
         cEventDispatcher* dispatcher = _context->GetSubsystem<cEventDispatcher>();
-        dispatcher->Send(type, this);
+        dispatcher->Send(type);
     }
 
     void iObject::Send(eEventType type, cDataBuffer* data)
     {
         cEventDispatcher* dispatcher = _context->GetSubsystem<cEventDispatcher>();
-        dispatcher->Send(type, this, data);
+        dispatcher->Send(type, data);
     }
 }
