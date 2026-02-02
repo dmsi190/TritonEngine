@@ -19,9 +19,9 @@ namespace triton::ecs
 		TRITON_OBJECT(cSystem)
 
 		explicit cSystem(triton::cContext* context);
-		virtual ~cSystem() override final = default;
+		virtual ~cSystem() override = default;
 
 	public:
-		void OnFrameUpdate(triton::cStack<cScene>* scenes) = 0;
+		virtual void OnFrameUpdate(triton::cStack<cScene>* scenes) = 0;
 	};
 }
