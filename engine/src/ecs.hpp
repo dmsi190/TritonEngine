@@ -27,7 +27,7 @@ namespace triton::ecs
 
 	public:
 		explicit cComponentStorage(cContext* context);
-		virtual ~cComponentStorage() override final = default;
+		virtual ~cComponentStorage() override final;
 
 		TComponent* Create(entity ent);
 		TComponent* Get(entity ent);
