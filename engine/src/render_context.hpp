@@ -19,7 +19,10 @@ namespace triton
     class cGPUResource : public iObject
     {
         TRITON_OBJECT(cGPUResource)
-        
+
+    public:
+        explicit cGPUResource(cContext* context) : iObject(context) {} // TODO: Temporary solution
+
     protected:
         mutable types::u32 _instance = 0;
         types::u32 _viewInstance = 0;
@@ -41,6 +44,8 @@ namespace triton
             LARGE = 4
         };
 
+        explicit cBuffer(cContext* context) : cGPUResource(context) {}
+
         inline eType GetBufferType() const { return _type; }
         inline types::usize GetByteSize() const { return _byteSize; }
         inline types::s32 GetSlot() const { return _slot; }
@@ -56,6 +61,9 @@ namespace triton
         TRITON_OBJECT(cVertexArray)
 
         friend class cOpenGLGraphicsAPI;
+
+    public:
+        explicit cVertexArray(cContext* context) : cGPUResource(context) {}
     };
 
     class cShader : public cGPUResource
@@ -73,6 +81,8 @@ namespace triton
             std::string _name = "";
             types::usize _index = 0;
         };
+
+        explicit cShader(cContext* context) : cGPUResource(context) {}
 
     private:
         std::string _vertex = "";
@@ -105,6 +115,8 @@ namespace triton
             RGBA8_MIPS = 7
         };
 
+        explicit cTexture(cContext* context) : cGPUResource(context) {}
+
         inline types::usize GetWidth() const { return _width; }
         inline types::usize GetHeight() const { return _height; }
         inline types::usize GetDepth() const { return _depth; }
@@ -131,6 +143,9 @@ namespace triton
         inline std::vector<cTexture*>& GetColorAttachments() const { return _colorAttachments; }
         inline cTexture* GetDepthAttachment() const { return _depthAttachment; }
         inline void SetDepthAttachment(cTexture* attachment) { _depthAttachment = attachment; }
+
+    public:
+        explicit cRenderTarget(cContext* context) : cGPUResource(context) {}
 
     private:
         mutable std::vector<cTexture*> _colorAttachments = {};

@@ -72,7 +72,7 @@ namespace triton
 
     cBuffer* cOpenGLGraphicsAPI::CreateBuffer(usize byteSize, cBuffer::eType type, s32 slot, const void* data)
     {
-        cBuffer* buffer = _context->Create<cBuffer>();
+        cBuffer* buffer = _context->Create<cBuffer>(_context);
         buffer->_byteSize = byteSize;
         buffer->_type = type;
         buffer->_slot = slot;
@@ -186,7 +186,7 @@ namespace triton
 
     cVertexArray* cOpenGLGraphicsAPI::CreateVertexArray()
     {
-        cVertexArray* vertexArray = _context->Create<cVertexArray>();
+        cVertexArray* vertexArray = _context->Create<cVertexArray>(_context);
 
         glGenVertexArrays(1, (GLuint*)&vertexArray->_instance);
 
@@ -242,7 +242,7 @@ namespace triton
 
     cShader* cOpenGLGraphicsAPI::CreateShader(eCategory renderPath, const std::string& vertexPath, const std::string& fragmentPath, const std::vector<cShader::sDefinePair>& definePairs)
     {
-        cShader* shader = _context->Create<cShader>();
+        cShader* shader = _context->Create<cShader>(_context);
 
         std::string header = "";
         switch (renderPath)
@@ -335,7 +335,7 @@ namespace triton
 
     cShader* cOpenGLGraphicsAPI::CreateShader(const cShader* baseShader, const std::string& vertexFunc, const std::string& fragmentFunc, const std::vector<cShader::sDefinePair>& definePairs)
     {
-        cShader* shader = _context->Create<cShader>();
+        cShader* shader = _context->Create<cShader>(_context);
 
         const std::string vertexFuncDefinition = "void Vertex_Func(in vec3 _positionLocal, in vec2 _texcoord, in vec3 _normal, in int _instanceID, in Instance _instance, in Material material, in float _use2D, out vec4 _glPosition){}";
         const std::string vertexFuncPassthroughCall = "Vertex_Passthrough(InPositionLocal, instance, instance.Use2D, gl_Position);";
@@ -451,7 +451,7 @@ namespace triton
 
     cTexture* cOpenGLGraphicsAPI::CreateTexture(usize width, usize height, usize depth, cTexture::eDimension dimension, cTexture::eFormat format, const void* data)
     {
-        cTexture* texture = _context->Create<cTexture>();
+        cTexture* texture = _context->Create<cTexture>(_context);
         texture->_width = width;
         texture->_height = height;
         texture->_depth = depth;
@@ -707,7 +707,7 @@ namespace triton
 
     cRenderTarget* cOpenGLGraphicsAPI::CreateRenderTarget(const std::vector<cTexture*>& colorAttachments, cTexture* depthAttachment)
     {
-        cRenderTarget* renderTarget = _context->Create<cRenderTarget>();
+        cRenderTarget* renderTarget = _context->Create<cRenderTarget>(_context);
 
         renderTarget->_colorAttachments = colorAttachments;
         renderTarget->_depthAttachment = depthAttachment;
