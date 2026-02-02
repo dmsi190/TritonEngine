@@ -46,7 +46,6 @@ namespace triton
 		void DeallocateChunk(types::u32 chunkIndex);
 		types::u32 GetChunkIndex(types::u32 globalPosition) const;
 		types::u32 GetChunkLocalPosition(types::u32 chunkIndex, types::u32 globalPosition) const;
-		types::cpuword MakeHashMask(types::usize size) const;
 
 	private:
 		sChunkAllocatorDescriptor _allocatorDesc = {};
@@ -224,14 +223,5 @@ namespace triton
 		const types::u32 localPosition = globalPosition - chunkIndexBoundary;
 
 		return localPosition;
-	}
-
-	template <typename TValue>
-	types::cpuword cStack<TValue>::MakeHashMask(types::usize size) const
-	{
-		unsigned int count = __lzcnt((unsigned int)size);
-		types::cpuword mask = (types::cpuword)((1 << (31 - count)) - 1);
-
-		return mask;
 	}
 }

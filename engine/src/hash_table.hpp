@@ -67,7 +67,7 @@ namespace triton
 		_allocatorDesc = allocatorDesc;
 		_elements = _context->Create<cStack<cHashTablePair<TKey, TValue>>>(_context, _allocatorDesc);
 		_hashTableSize = _allocatorDesc.hashTableSize;
-		_hashMask = MakeHashMask(_allocatorDesc.hashTableSize);
+		_hashMask = cMath::MakeHashMask(_allocatorDesc.hashTableSize);
 		_hashTable = (cStackValue*)memoryAllocator->Allocate(_hashTableSize * sizeof(cStackValue), caps->memoryAlignment);
 	}
 

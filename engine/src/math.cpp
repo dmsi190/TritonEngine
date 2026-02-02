@@ -203,6 +203,14 @@ namespace triton
 		return glm::radians(degrees);
 	}
 
+	qword cMath::MakeHashMask(usize size)
+	{
+		unsigned int count = __lzcnt((unsigned int)size);
+		qword mask = (qword)((1 << (31 - count)) - 1);
+
+		return mask;
+	}
+
 	qword cMath::HashBytes(const u8* data, usize dataByteSize, qword mask)
 	{
 		qword hash = 0x9e3779b97f4a7c15ull;

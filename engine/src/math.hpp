@@ -195,6 +195,7 @@ namespace triton
 		virtual ~cMath() override final = default;
 
 		static types::f32 DegreesToRadians(types::f32 degrees);
+		static types::qword MakeHashMask(types::usize size);
 
 		template <typename TValue>
 		static types::qword Hash(const TValue& value, types::qword mask);
