@@ -8,7 +8,6 @@
 #include "engine.hpp"
 #include "graphics.hpp"
 #include "context.hpp"
-#include "camera_manager.hpp"
 #include "render_manager.hpp"
 #include "render_context.hpp"
 #include "sound_context.hpp"
