@@ -1,17 +1,17 @@
 cmake_minimum_required(VERSION 3.25.1)
 
-project(RealWareEngine)
+project(TritonEngine)
 
 set(CMAKE_CXX_STANDARD 17)
 
 file(GLOB_RECURSE SOURCE_FILES thirdparty/lodepng/lodepng.cpp src/*.cpp src/*.hpp)
 
-add_library(RealWareEngine ${SOURCE_FILES})
+add_library(TritonEngine ${SOURCE_FILES})
 
 #set_property(TARGET RealWareEngine PROPERTY MSVC_RUNTIME_LIBRARY "MultiThreadedDebug")
 
 target_include_directories(
-    RealWareEngine
+    TritonEngine
     PUBLIC
     thirdparty/compiled_glfw/include
     thirdparty/compiled_openal-soft/include
@@ -26,7 +26,7 @@ target_include_directories(
     thirdparty/compiled_PhysX/physx_include
 )
 target_link_directories(
-    RealWareEngine
+    TritonEngine
     PUBLIC
     thirdparty/compiled_glfw/lib/Debug
     thirdparty/compiled_openal-soft/lib/Debug
@@ -37,7 +37,7 @@ target_link_directories(
 )
 
 target_link_libraries(
-    RealWareEngine
+    TritonEngine
 	glew32
     glfw3
 	opengl32

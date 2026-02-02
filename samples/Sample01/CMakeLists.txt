@@ -1,13 +1,13 @@
 cmake_minimum_required(VERSION 3.25.1)
 
-project(RealWareSample01)
+project(TritonSample01)
 
 set(CMAKE_CXX_STANDARD 17)
 
-link_libraries(RealWareEngine)
+link_libraries(TritonEngine)
 
 add_executable(
-    RealWareSample01
+    TritonSample01
     main.cpp
 )
 
@@ -24,12 +24,12 @@ add_executable(
 
 add_custom_command(
     TARGET
-    RealWareSample01
+    TritonSample01
     POST_BUILD
     COMMAND
     ${CMAKE_COMMAND}
     -E
     copy_directory
-    "${CMAKE_SOURCE_DIR}/exe_files"
+    "${CMAKE_SOURCE_DIR}/runtime"
     "${CMAKE_CURRENT_BINARY_DIR}"
 )
