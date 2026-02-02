@@ -1,4 +1,4 @@
-#include <iostream>
+/*#include <iostream>
 #include <chrono>
 #include <ctime>
 #include <vector>
@@ -313,5 +313,14 @@ int main()
     delete app;
     delete appDesc;
 
+    return 0;
+}*/
+
+#include <iostream>
+
+int main()
+{
+    std::cout << "Hello!" << std::endl;
+    
     return 0;
 }
