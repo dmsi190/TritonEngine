@@ -5,7 +5,7 @@
 #include "context.hpp"
 #include "graphics.hpp"
 #include "input.hpp"
-#include "camera_manager.hpp"
+#include "camera_system.hpp"
 #include "texture_manager.hpp"
 #include "filesystem_manager.hpp"
 #include "font_manager.hpp"
@@ -41,7 +41,6 @@ namespace triton
 		_context->RegisterSubsystem(this);
 		_context->RegisterSubsystem(new cGraphics(_context, cGraphics::eAPI::OGL));
 		_context->RegisterSubsystem(new cInput(_context));
-		_context->RegisterSubsystem(new cCamera(_context));
 		_context->RegisterSubsystem(new cTextureAtlas(_context));
 		_context->RegisterSubsystem(new cFileSystem(_context));
 		_context->RegisterSubsystem(new cFont(_context));
@@ -53,7 +52,8 @@ namespace triton
 		_context->RegisterSubsystem(new cMath(_context));
 
 		// Create systems
-		cAudio* audioSystem = _context->Create<cAudio>(_context);
+		cAudio* audioSystem = _context->Create<cAudio>(_context, cAudio::API::OAL);
+		cCameraSystem* camera = _context->Create<cCameraSystem>(_context);
 
 		// Subscribe systems to core events
 		audioSystem->Subscribe(
@@ -69,7 +69,6 @@ namespace triton
 
 		// Create sound context
 		cAudio* audio = _context->GetSubsystem<cAudio>();
-		audio->SetAPI(cAudio::API::OAL);
 	}
 
 	void cEngine::Run()
@@ -81,7 +80,7 @@ namespace triton
 
 		auto gfx = _context->GetSubsystem<cGraphics>();
 		auto input = _context->GetSubsystem<cInput>();
-		auto camera = _context->GetSubsystem<cCamera>();
+		auto camera = _context->GetSubsystem<cCameraSystem>();
 		auto time = _context->GetSubsystem<cTime>();
 		auto physics = _context->GetSubsystem<cPhysics>();
 
@@ -93,7 +92,7 @@ namespace triton
 		{
 			time->Update();
 			physics->Simulate();
-			camera->Update();
+			// camera->OnFrameUpdate(); TODO: camera system per frame update
 			gfx->CompositeFinal();
 			window->SwapBuffers();
 			window->PollEvents();
