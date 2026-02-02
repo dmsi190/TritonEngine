@@ -49,8 +49,9 @@ namespace triton
 		explicit iObject(cContext* context) : _context(context) {}
 		virtual ~iObject() = default;
 
-		iObject(const iObject& rhs) = delete;
-		iObject& operator=(const iObject& rhs) = delete;
+		// TODO: Copying of object is now removed, bring it back
+		//iObject(const iObject& rhs) = delete;
+		//iObject& operator=(const iObject& rhs) = delete;
 
 		virtual ClassType GetType() const = 0;
 
