@@ -86,7 +86,7 @@ namespace triton
 	{
 		cStackValue se = New();
 
-		TValue* object = _context->Create<TValue>(_chunks[se.chunk], se.localPosition, std::forward<Args>(args)...);
+		TValue* object = _context->Create<TValue>((types::u8*)_chunks[se.chunk], se.localPosition, std::forward<Args>(args)...);
 		object->chunk = se.chunk;
 		object->localPosition = se.localPosition;
 		object->globalPosition = se.globalPosition;
