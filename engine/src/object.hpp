@@ -8,6 +8,7 @@
 #include "event_types.hpp"
 #include "memory_pool.hpp"
 #include "tag.hpp"
+#include "stack_value.hpp"
 #include "types.hpp"
 
 namespace triton
@@ -36,7 +37,7 @@ namespace triton
 		iObject* object = nullptr;
 	};
 
-	class iObject
+	class iObject : public cStackValue
 	{
 		template <typename T>
 		friend class cIdVector;
