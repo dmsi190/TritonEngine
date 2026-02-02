@@ -11,8 +11,14 @@
 
 namespace triton
 {
+	class cQuaternion;
+	class cMatrix4;
+	class cTransform;
+
 	class cVector2
 	{
+		friend class cVector2;
+
 	public:
 		explicit cVector2(const glm::vec2& vec);
 		explicit cVector2(types::f32 value);
@@ -41,6 +47,11 @@ namespace triton
 
 	class cVector3
 	{
+		friend class cVector3;
+		friend class cQuaternion;
+		friend class cMatrix4;
+		friend class cTransform;
+
 	public:
 		explicit cVector3(const glm::vec3& vec);
 		explicit cVector3(types::f32 value);
@@ -74,6 +85,8 @@ namespace triton
 
 	class cVector4
 	{
+		friend class cVector4;
+
 	public:
 		explicit cVector4(const glm::vec4& vec);
 		explicit cVector4(types::f32 value);
@@ -108,6 +121,8 @@ namespace triton
 
 	class cQuaternion
 	{
+		friend class cQuaternion;
+
 	public:
 		explicit cQuaternion(const glm::quat& quat);
 		explicit cQuaternion(types::f32 angle, const cVector3& axis);
@@ -117,7 +132,12 @@ namespace triton
 		cVector3 operator*(const cVector3& vec) const;
 		cQuaternion operator*(const cQuaternion& quat) const;
 
-		const cVector3& EulerAngles() const;
+		cVector3 EulerAngles() const;
+
+		inline types::f32 GetX() const { return _quat.x; }
+		inline types::f32 GetY() const { return _quat.y; }
+		inline types::f32 GetZ() const { return _quat.z; }
+		inline types::f32 GetW() const { return _quat.w; }
 
 	private:
 		glm::quat _quat = {};
@@ -125,6 +145,9 @@ namespace triton
 
 	class cMatrix4
 	{
+		friend class cMatrix4;
+		friend class cTransform;
+		
 	public:
 		explicit cMatrix4(const glm::mat4& mat);
 		explicit cMatrix4(types::f32 value);
