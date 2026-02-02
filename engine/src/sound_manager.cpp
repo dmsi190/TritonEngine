@@ -9,7 +9,8 @@ using namespace types;
 
 namespace triton
 {
-    mSound::mSound(cContext* context, iSoundContext* soundContext) : iObject(context), _soundContext(soundContext), _sounds(app) {}
+    // TODO: New implementation of sound creation
+    /*mSound::mSound(cContext* context, iSoundContext* soundContext) : iObject(context), _soundContext(soundContext), _sounds(app) {}
 
     cSound* mSound::CreateSound(const std::string& id, const std::string& filename, eCategory format)
     {
@@ -29,7 +30,7 @@ namespace triton
     void mSound::DestroySound(const std::string& id)
     {
         _sounds.Delete(id);
-    }
+    }*/
 
     /*void mSound::Play(entity object, cScene* scene)
     {
