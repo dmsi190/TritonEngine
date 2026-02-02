@@ -36,8 +36,10 @@ namespace triton::ecs
 
 	class cScene : public iObject
 	{
-		// TODO_TRITON: Create component storages for each component type here
+		// TODO: Create component storages for each component type
 		// cComponentStorage<sTransform> _transforms;
+		// ...
+		// cComponentStorage<sHealth> _healths;
 
 	public:
 		explicit cScene(cContext* context);
