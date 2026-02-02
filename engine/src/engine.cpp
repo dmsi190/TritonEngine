@@ -91,7 +91,7 @@ namespace triton
 		while (window->GetRunState() == K_FALSE)
 		{
 			time->Update();
-			physics->Simulate();
+			// physics->Simulate(); TODO: physics simulation
 			// camera->OnFrameUpdate(); TODO: camera system per frame update
 			gfx->CompositeFinal();
 			window->SwapBuffers();
