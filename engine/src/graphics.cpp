@@ -284,7 +284,7 @@ namespace triton
         gfx->DestroyTexture(_opaqueRenderTarget->GetColorAttachments()[0]);
         gfx->DestroyTexture(_opaqueRenderTarget->GetDepthAttachment());
 
-        _context->Destroy<std::unordered_map<cMaterial*, s32>>(_materialsMap);
+        delete _materialsMap; // TODO: Temporary solution
 
         memoryAllocator->Deallocate(_transparentTextureAtlasTextures);
         memoryAllocator->Deallocate(_opaqueTextureAtlasTextures);
@@ -394,7 +394,7 @@ namespace triton
         cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
         const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
 
-        sPrimitive* primitiveObject = (sPrimitive*)_context->Create<sPrimitive>();
+        sPrimitive* primitiveObject = _context->Create<sPrimitive>();
 
         if (primitive == eCategory::PRIMITIVE_TRIANGLE)
         {
