@@ -167,7 +167,7 @@ namespace triton
 	{
 		cStackValue sv = {};
 		sv.chunk = value->chunk;
-		sv.position = value->position;
+		sv.localPosition = value->localPosition;
 		sv.globalPosition = value->globalPosition;
 
 		const types::u32 hash = cMath::Hash<TKey>(key, _hashMask);
