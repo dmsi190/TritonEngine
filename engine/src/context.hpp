@@ -5,12 +5,13 @@
 #include <unordered_map>
 #include "object.hpp"
 #include "factory.hpp"
-#include "ecs.hpp"
+#include "scene.hpp"
 #include "types.hpp"
 
 namespace triton
 {
 	class cMemoryAllocator;
+	template <typename TValue>
 	class cStack;
 
 	class cContext
