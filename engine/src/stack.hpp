@@ -191,12 +191,12 @@ namespace triton
 	template <typename TValue>
 	types::u32 cStack<TValue>::AllocateChunk()
 	{
-		if (_chunkCount >= _maxChunkCount)
+		if (_chunkCount >= _allocatorDesc.maxChunkCount)
 			return 0;
 
 		const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
 		cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
-		_chunks[_chunkCount] = (TValue*)memoryAllocator->Allocate(_chunkByteSize, caps->memoryAlignment);
+		_chunks[_chunkCount] = (TValue*)memoryAllocator->Allocate(_allocatorDesc.chunkByteSize, caps->memoryAlignment);
 
 		return _chunkCount++;
 	}
