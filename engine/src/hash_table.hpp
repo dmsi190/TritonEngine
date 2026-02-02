@@ -43,7 +43,7 @@ namespace triton
 		void Erase(const TKey& key);
 		void Erase(types::u32 index);
 
-		inline types::usize GetSize() const { return _elementCount; }
+		inline types::usize GetSize() const { return _elements->GetSize(); }
 
 	private:
 		void HashPair(const TKey& key, const TValue* value);
