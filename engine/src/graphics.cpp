@@ -382,7 +382,7 @@ namespace triton
         return geometry;
     }
 
-    cRenderPass* cGraphics::CreateRenderPass(const sRenderPassDescriptor* desc)
+    cRenderPass* cGraphics::CreateRenderPass(sRenderPassDescriptor* desc)
     {
         cRenderPassGPU* renderPass = _gfx->CreateRenderPass(desc);
 
