@@ -6,23 +6,11 @@
 #include "object.hpp"
 #include "context.hpp"
 #include "memory_pool.hpp"
+#include "stack_value.hpp"
 #include "types.hpp"
 
 namespace triton
 {
-	template <typename TValue>
-	class cStack;
-
-	class cStackValue
-	{
-		template <typename>
-		friend class cStack;
-
-		types::u32 chunk = 0;
-		types::u32 localPosition = 0;
-		types::u32 globalPosition = 0;
-	};
-
 	struct sChunkAllocatorDescriptor
 	{
 		types::usize chunkByteSize = 16 * 1024;
