@@ -108,7 +108,7 @@ namespace triton
 
 		new (object) T(std::forward<Args>(args)...);
 
-		object->_identifier = cIdentifier::Generate(T::GetTypeStatic());
+		object->_id = cIdentifier::Generate(T::GetTypeStatic());
 
 		return object;
 	}
