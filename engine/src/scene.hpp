@@ -1,3 +1,5 @@
+// scene.hpp
+
 #pragma once
 
 #include "object.hpp"
