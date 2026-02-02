@@ -1,6 +1,6 @@
-// camera_manager.cpp
+// camera_system.cpp
 
-#include "camera_manager.hpp"
+#include "camera_system.hpp"
 #include "physics_manager.hpp"
 #include "graphics.hpp"
 #include "render_context.hpp"
@@ -16,9 +16,11 @@ using namespace types;
 
 namespace triton
 {
-    cCamera::cCamera(cContext* context) : cComponent(context) {}
+    cCameraSystem::cCameraSystem(cContext* context) : cSystem(context) {}
 
-    void cCamera::Update()
+    void cCameraSystem::OnFrameUpdate(cStack<ecs::cScene>* scenes) {}
+
+    /*void cCamera::Update()
     {
         const cInput* input = _context->GetSubsystem<cInput>();
         const cTime* time = _context->GetSubsystem<cTime>();
@@ -131,5 +133,5 @@ namespace triton
         const cVector3 cameraPosition = physics->GetControllerPosition(controller);
 
         _cameraGameObject->GetTransform()->_position = cameraPosition;
-    }
+    }*/
 }
