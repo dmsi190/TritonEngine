@@ -207,7 +207,7 @@ namespace triton
 		{
 			const types::usize byteSize = sizeof(TValue);
 
-			return HashBytes(&value, byteSize, mask);
+			return HashBytes((const types::u8*)&value, byteSize, mask);
 		}
 		else if constexpr (std::is_same_v<TValue, cTag>)
 		{
