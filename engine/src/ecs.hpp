@@ -34,20 +34,6 @@ namespace triton::ecs
 		void Destroy(entity ent);
 	};
 
-	class cScene : public iObject
-	{
-		// TODO: Create component storages for each component type
-		// cComponentStorage<sTransform> _transforms;
-		// ...
-		// cComponentStorage<sHealth> _healths;
-
-	public:
-		explicit cScene(cContext* context);
-		virtual ~cScene() override final = default;
-
-		entity CreateEntity() const;
-	};
-
 	template <typename TComponent>
 	cComponentStorage<TComponent>::cComponentStorage(cContext* context)
 	{
