@@ -66,6 +66,7 @@ namespace triton
 		cContext* _context = nullptr;
 		types::boolean _occupied = types::K_FALSE;
 		types::s64 _allocatorIndex = 0;
+		types::boolean _allocatedUsingMemAllocator = types::K_FALSE;
 		cTag _id;
 	};
 }

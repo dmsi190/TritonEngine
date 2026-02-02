@@ -15,14 +15,6 @@ namespace triton
 	class cContext;
 
 	template <typename T>
-	class cFactoryObject : public cObjectPtr
-	{
-		friend class cFactory<T>;
-
-		types::boolean allocated = types::K_FALSE;
-	};
-
-	template <typename T>
 	class cFactory : public iObject
 	{
 		TRITON_OBJECT(cFactory)
@@ -32,15 +24,15 @@ namespace triton
 		virtual ~cFactory() override final = default;
 
 		template <typename... Args>
-		cFactoryObject<T> Create(Args&&... args);
+		T* Create(Args&&... args);
 		template <typename... Args>
-		cFactoryObject<T> Create(types::u8* data, types::u32 index, Args&&... args);
-		void Destroy(cFactoryObject<T>& object);
+		T* Create(types::u8* data, types::u32 index, Args&&... args);
+		void Destroy(T* object);
 
 	private:
 		types::boolean AssertCounter();
 		template <typename... Args>
-		cFactoryObject<T> New(types::u8* data, types::u32 index, Args&&... args);
+		T* New(types::u8* data, types::u32 index, Args&&... args);
 
 	private:
 		types::usize _counter = 0;
@@ -51,34 +43,34 @@ namespace triton
 
 	template <typename T>
 	template <typename... Args>
-	cFactoryObject<T> cFactory<T>::Create(Args&&... args)
+	T* cFactory<T>::Create(Args&&... args)
 	{
 		AssertCounter();
+
 		return New(nullptr, 0, std::forward<Args>(args)...);
 	}
 
 	template <typename T>
 	template <typename... Args>
-	cFactoryObject<T> cFactory<T>::Create(types::u8* ptr, types::u32 index, Args&&... args)
+	T* cFactory<T>::Create(types::u8* ptr, types::u32 index, Args&&... args)
 	{
 		AssertCounter();
+
 		return New(ptr, index, std::forward<Args>(args)...);
 	}
 
 	template <typename T>
-	void cFactory<T>::Destroy(cFactoryObject<T>& object)
+	void cFactory<T>::Destroy(T* object)
 	{
-		T* objectPtr = object.object;
-
-		if (objectPtr == nullptr)
+		if (object == nullptr)
 			return;
 
-		objectPtr->~T();
+		object->~T();
 
-		if (objectPtr->allocated == types::K_TRUE)
+		if (object->_allocatedUsingMemAllocator == types::K_TRUE)
 		{
 			cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
-			memoryAllocator->Deallocate(objectPtr);
+			memoryAllocator->Deallocate(object);
 		}
 	}
 
@@ -97,27 +89,27 @@ namespace triton
 
 	template <typename T>
 	template <typename... Args>
-	cFactoryObject<T> cFactory<T>::New(types::u8* data, types::u32 index, Args&&... args)
+	T* cFactory<T>::New(types::u8* data, types::u32 index, Args&&... args)
 	{
-		cFactoryObject<T> fo = {};
+		T* object = nullptr;
 
 		if (data == nullptr)
 		{
 			const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
 			cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
-			fo.object = (T*)memoryAllocator->Allocate(sizeof(T), caps->memoryAlignment);
-			fo.allocated = types::K_TRUE;
+			object = (T*)memoryAllocator->Allocate(sizeof(T), caps->memoryAlignment);
+			object->_allocatedUsingMemAllocator = types::K_TRUE;
 		}
 		else
 		{
-			fo.object = &(((T*)data)[index]);
-			fo.allocated = types::K_FALSE;
+			object = &(((T*)data)[index]);
+			object->_allocatedUsingMemAllocator = types::K_FALSE;
 		}
 
-		new (fo.object) T(std::forward<Args>(args)...);
+		new (object) T(std::forward<Args>(args)...);
 
-		fo.object->_identifier = cIdentifier::Generate(T::GetTypeStatic());
+		object->_identifier = cIdentifier::Generate(T::GetTypeStatic());
 
-		return fo;
+		return object;
 	}
 }
