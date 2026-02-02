@@ -90,7 +90,7 @@ namespace triton
 		const ClassType type = T::GetTypeStatic();
 		const auto it = _factories.find(type);
 		if (it == _factories.end())
-			_factories.insert({type, new T(this)});
+			_factories.insert({type, new cFactory<T>(this)});
 	}
 
 	template <typename T>
