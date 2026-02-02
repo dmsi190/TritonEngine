@@ -8,10 +8,13 @@
 #include "stack.hpp"
 #include "types.hpp"
 
-namespace triton::ecs
+namespace triton
 {
 	class cContext;
+}
 
+namespace triton::ecs
+{
 	using entity = types::u64;
 	static constexpr entity kInvalidEntity = 0;
 
@@ -26,7 +29,7 @@ namespace triton::ecs
 		cHashTable<entity, types::u32>* _indices = nullptr;
 
 	public:
-		explicit cComponentStorage(cContext* context);
+		explicit cComponentStorage(triton::cContext* context);
 		virtual ~cComponentStorage() override final;
 
 		TComponent* Create(entity ent);
@@ -35,7 +38,7 @@ namespace triton::ecs
 	};
 
 	template <typename TComponent>
-	cComponentStorage<TComponent>::cComponentStorage(cContext* context)
+	cComponentStorage<TComponent>::cComponentStorage(triton::cContext* context)
 	{
 		const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
 
