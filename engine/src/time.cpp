@@ -2,6 +2,8 @@
 
 #include "time.hpp"
 
+using namespace types;
+
 namespace triton
 {
 	cTime::cTime(cContext* context) : iObject(context) {}
