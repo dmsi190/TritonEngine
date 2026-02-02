@@ -10,7 +10,7 @@ using namespace types;
 
 namespace triton
 {
-    cGameObject::cGameObject(cContext* context) : iObject(context)
+    /*cGameObject::cGameObject(cContext* context) : iObject(context)
     {
         sTransform* pTransform = (sTransform*)(memoryPool->Allocate(sizeof(sTransform)));
         _transform = new (pTransform) sTransform();
@@ -44,22 +44,5 @@ namespace triton
             scene,
             substance
         );
-    }
-
-    mGameObject::mGameObject(cContext* context) : iObject(context), _maxGameObjectCount(app->GetDesc()->_maxGameObjectCount), _gameObjects(app) {}
-
-    cGameObject* mGameObject::CreateGameObject(const std::string& id)
-    {
-        return _gameObjects.Add(id, GetApplication(), GetApplication()->GetMemoryPool());
-    }
-
-    cGameObject* mGameObject::FindGameObject(const std::string& id)
-    {
-        return _gameObjects.Find(id);
-    }
-
-    void mGameObject::DestroyGameObject(const std::string& id)
-    {
-        _gameObjects.Delete(id);
-    }
+    }*/
 }
