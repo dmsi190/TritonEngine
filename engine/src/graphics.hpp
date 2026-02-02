@@ -31,8 +31,10 @@ namespace triton
         glm::vec3 _normal = glm::vec3(0.0f);
     };
 
-    struct sVertexBufferGeometry
+    struct sVertexBufferGeometry : public iObject
     {
+        TRITON_OBJECT(sVertexBufferGeometry)
+
         types::usize _vertexCount = 0;
         types::usize _indexCount = 0;
         void* _vertexPtr = nullptr;
@@ -42,8 +44,10 @@ namespace triton
         eCategory _format = eCategory::VERTEX_BUFFER_FORMAT_NONE;
     };
 
-    struct sPrimitive
+    struct sPrimitive : public iObject
     {
+        TRITON_OBJECT(sPrimitive)
+
         sVertex* _vertices = nullptr;
         index* _indices = nullptr;
         types::usize _vertexCount = 0;
