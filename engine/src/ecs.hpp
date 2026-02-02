@@ -79,13 +79,4 @@ namespace triton::ecs
 		types::u32 index = _indices->Find(ent);
 		_data->Erase(index);
 	}
-
-	cScene::cScene(cContext* context) : iObject(context) {}
-
-	entity cScene::CreateEntity() const
-	{
-		static entity next = kInvalidEntity + 1;
-
-		return next;
-	}
 }
