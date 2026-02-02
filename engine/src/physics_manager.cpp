@@ -44,11 +44,7 @@ namespace triton
         _simulationEvent(new cPhysicsSimulationEvent())
     {
         const sCapabilities* caps = context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
-        _scenes = _context->Create<cCache<cPhysicsScene>>(context, caps->maxPhysicsSceneCount);
-        _materials = _context->Create<cCache<cPhysicsMaterial>>(context, caps->maxPhysicsMaterialCount);
-        _actors = _context->Create<cCache<cPhysicsActor>>(context, caps->maxPhysicsActorCount);
-        _controllers = _context->Create<cCache<cPhysicsController>>(context, caps->maxPhysicsControllerCount);
-
+        
         _foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *_allocator, *_error);
         if (_foundation == nullptr)
         {
@@ -68,17 +64,14 @@ namespace triton
     {
         _physics->release();
         _foundation->release();
-        _context->Destroy<cCache<cPhysicsController>>(_controllers);
-        _context->Destroy<cCache<cPhysicsActor>>(_actors);
-        _context->Destroy<cCache<cPhysicsMaterial>>(_materials);
-        _context->Destroy<cCache<cPhysicsScene>>(_scenes);
         delete _simulationEvent;
         delete _cpuDispatcher;
         delete _error;
         delete _allocator;
     }
 
-    cCacheObject<cPhysicsScene> cPhysics::CreateScene(const cTag& id, const glm::vec3& gravity)
+    // TODO: New implementation of physics scene/material/actor/controller creation
+    /*cCacheObject<cPhysicsScene> cPhysics::CreateScene(const cTag& id, const glm::vec3& gravity)
     {
         PxSceneDesc sceneDesc(_physics->getTolerancesScale());
         sceneDesc.gravity = PxVec3(gravity.y, gravity.x, gravity.z);
@@ -160,47 +153,7 @@ namespace triton
             scene->GetScene()->addActor(*actor);
 
         return _actors->Create(id, gameObject, actor, staticOrDynamic);
-    }
-
-    cCacheObject<cPhysicsScene> cPhysics::FindScene(const cTag& id)
-    {
-        return _scenes->Find(id);
-    }
-
-    cCacheObject<cPhysicsMaterial> cPhysics::FindMaterial(const cTag& id)
-    {
-        return _materials->Find(id);
-    }
-
-    cCacheObject<cPhysicsActor> cPhysics::FindActor(const cTag& id)
-    {
-        return _actors->Find(id);
-    }
-
-    cCacheObject<cPhysicsController> cPhysics::FindController(const cTag& id)
-    {
-        return _controllers->Find(id);
-    }
-
-    void cPhysics::DestroyScene(const cTag& id)
-    {
-        _scenes->Destroy(id);
-    }
-
-    void cPhysics::DestroyMaterial(const cTag& id)
-    {
-        _materials->Destroy(id);
-    }
-
-    void cPhysics::DestroyActor(const cTag& id)
-    {
-        _actors->Destroy(id);
-    }
-
-    void cPhysics::DestroyController(const cTag& id)
-    {
-        _controllers->Destroy(id);
-    }
+    }*/
 
     void cPhysics::MoveController(const cPhysicsController* controller, const glm::vec3& position, f32 minStep)
     {
@@ -226,7 +179,8 @@ namespace triton
         return glm::vec3(position.y, position.x + controller->GetEyeHeight(), position.z);
     }
 
-    void cPhysics::Simulate()
+    // TODO: New physics actor simulation
+    /*void cPhysics::Simulate()
     {
         const cPhysicsActor* actorsArray = _actors->GetElements();
 
@@ -264,7 +218,7 @@ namespace triton
             scene->simulate(1.0f / 60.0f);
             scene->fetchResults(true);
         }
-    }
+    }*/
 
     /*void mPhysics::Update()
     {

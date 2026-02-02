@@ -9,7 +9,6 @@
 #include <PxPhysicsAPI.h>
 #include "../../thirdparty/glm/glm/glm.hpp"
 #include "category.hpp"
-#include "cache.hpp"
 #include "log.hpp"
 
 namespace physx
@@ -155,23 +154,17 @@ namespace triton
         explicit cPhysics(cContext* context);
         ~cPhysics();
 
-        cCacheObject<cPhysicsScene> CreateScene(const cTag& id, const glm::vec3& gravity = glm::vec3(0.0f, -9.81f, 0.0f));
-        cCacheObject<cPhysicsMaterial> CreateMaterial(const cTag& id, const glm::vec3& params = glm::vec3(0.5f, 0.5f, 0.6f));
-        cCacheObject<cPhysicsActor> CreateActor(const cTag& id, eCategory staticOrDynamic, eCategory shapeType, const cPhysicsScene* scene, const cPhysicsMaterial* material, types::f32 mass, const cTransform* transform, cGameObject* gameObject);
-        cCacheObject<cPhysicsController> CreateController(const cTag& id, types::f32 eyeHeight, types::f32 height, types::f32 radius, const cTransform* transform, const cVector3& up, const cPhysicsScene* scene, const cPhysicsMaterial* material);
-        cPhysicsScene* FindScene(const cTag& id);
-        cPhysicsMaterial* FindMaterial(const cTag& id);
-        cPhysicsActor* FindActor(const cTag& id);
-        cPhysicsController* FindController(const cTag& id);
-        void DestroyScene(const cTag& id);
-        void DestroyMaterial(const cTag& id);
-        void DestroyActor(const cTag& id);
-        void DestroyController(const cTag& id);
-
+        // TODO: New implementation of physics scene/material/actor/controller creation
+        //cCacheObject<cPhysicsScene> CreateScene(const cTag& id, const glm::vec3& gravity = glm::vec3(0.0f, -9.81f, 0.0f));
+        //cCacheObject<cPhysicsMaterial> CreateMaterial(const cTag& id, const glm::vec3& params = glm::vec3(0.5f, 0.5f, 0.6f));
+        //cCacheObject<cPhysicsActor> CreateActor(const cTag& id, eCategory staticOrDynamic, eCategory shapeType, const cPhysicsScene* scene, const cPhysicsMaterial* material, types::f32 mass, const cTransform* transform, cGameObject* gameObject);
+        //cCacheObject<cPhysicsController> CreateController(const cTag& id, types::f32 eyeHeight, types::f32 height, types::f32 radius, const cTransform* transform, const cVector3& up, const cPhysicsScene* scene, const cPhysicsMaterial* material);
+        
         void MoveController(const cPhysicsController* controller, const glm::vec3& position, types::f32 minStep = 0.001f);
         glm::vec3 GetControllerPosition(const cPhysicsController* controller);
 
-        void Simulate();
+        // TODO: New physics actor simulation
+        //void Simulate();
 
     private:
         cPhysicsAllocator* _allocator = nullptr;
@@ -181,9 +174,5 @@ namespace triton
         physx::PxFoundation* _foundation = nullptr;
         physx::PxPhysics* _physics = nullptr;
         std::mutex _mutex;
-        cCache<cPhysicsScene>* _scenes;
-        cCache<cPhysicsMaterial>* _materials;
-        cCache<cPhysicsActor>* _actors;
-        cCache<cPhysicsController>* _controllers;
     };
 }
