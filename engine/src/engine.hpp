@@ -9,7 +9,6 @@
 namespace triton
 {
 	class cContext;
-	struct sApplicationCapabilities;
 	class iApplication;
 
 	class cEngine : public iObject
