@@ -6,7 +6,6 @@
 #include "../../thirdparty/glm/glm/glm.hpp"
 #include "render_context.hpp"
 #include "category.hpp"
-#include "cache.hpp"
 #include "types.hpp"
 
 namespace triton
@@ -178,15 +177,18 @@ namespace triton
 		explicit cGraphics(cContext* context, eAPI api);
 		virtual ~cGraphics() override final;
 
-        cCacheObject<cMaterial> CreateMaterial(const std::string& id, cTextureAtlasTexture* diffuseTexture, const glm::vec4& diffuseColor, const glm::vec4& highlightColor, eCategory customShaderRenderPath = eCategory::RENDER_PATH_OPAQUE, const std::string& customVertexFuncPath = "", const std::string& customFragmentFuncPath = "");
+        // TODO: Remove material creation from cGraphics
+        //cCacheObject<cMaterial> CreateMaterial(const std::string& id, cTextureAtlasTexture* diffuseTexture, const glm::vec4& diffuseColor, const glm::vec4& highlightColor, eCategory customShaderRenderPath = eCategory::RENDER_PATH_OPAQUE, const std::string& customVertexFuncPath = "", const std::string& customFragmentFuncPath = "");
         cVertexArray* CreateDefaultVertexArray();
         sVertexBufferGeometry* CreateGeometry(eCategory format, types::usize verticesByteSize, const void* vertices, types::usize indicesByteSize, const void* indices);
         cRenderPass* CreateRenderPass(const sRenderPassDescriptor* desc);
         sPrimitive* CreatePrimitive(eCategory primitive);
         sModel* CreateModel(const std::string& filename);
 
-        cCacheObject<cMaterial> FindMaterial(const cTag& id);
+        // TODO: Remove material finding from cGraphics
+        //cCacheObject<cMaterial> FindMaterial(const cTag& id);
         
+        // TODO: Remove material destroying from cGraphics
         void DestroyMaterial(const cTag& id);
         void DestroyVertexArray(cVertexArray* vertexArray);
         void DestroyGeometry(sVertexBufferGeometry* geometry);
@@ -201,14 +203,16 @@ namespace triton
         void LoadShaderFiles(const std::string& vertexFuncPath, const std::string& fragmentFuncPath, std::string& vertexFunc, std::string& fragmentFunc);
         void UpdateLights();
         
-        void WriteObjectsToOpaqueBuffers(cIdVector<cGameObject>& objects, cRenderPass* renderPass);
-        void WriteObjectsToTransparentBuffers(cIdVector<cGameObject>& objects, cRenderPass* renderPass);
+        // TODO: Implement new CPU->GPU geometry buffer communication
+        //void WriteObjectsToOpaqueBuffers(cIdVector<cGameObject>& objects, cRenderPass* renderPass);
+        //void WriteObjectsToTransparentBuffers(cIdVector<cGameObject>& objects, cRenderPass* renderPass);
         
         void DrawGeometryOpaque(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, cRenderPass* renderPass);
         void DrawGeometryOpaque(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, cShader* singleShader = nullptr);
         void DrawGeometryTransparent(const sVertexBufferGeometry* geometry, const std::vector<cGameObject>& objects, const cGameObject* cameraObject, cRenderPass* renderPass);
         void DrawGeometryTransparent(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, cShader* singleShader = nullptr);
-        void DrawTexts(const std::vector<cGameObject>& objects);
+        // TODO: Implement new text drawing approach
+        //void DrawTexts(const std::vector<cGameObject>& objects);
         
         void CompositeTransparent();
         void CompositeFinal();
@@ -288,6 +292,5 @@ namespace triton
         cRenderTarget* _opaqueRenderTarget = nullptr;
         cRenderTarget* _transparentRenderTarget = nullptr;
         types::usize _materialCountCPU = 0;
-        cCache<cMaterial>* _materialsCPU;
 	};
 }

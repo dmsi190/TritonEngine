@@ -30,7 +30,8 @@ namespace triton
 {
     sRenderInstance::sRenderInstance(s32 materialIndex, const cTransform& transform)
     {
-        _use2D = transform._use2D;
+        // TODO: Implement 2D/3D render instances
+        //_use2D = transform._use2D;
         _materialIndex = materialIndex;
         _world = transform.GetWorld();
     }
@@ -56,9 +57,10 @@ namespace triton
     sLightInstance::sLightInstance(const cGameObject* object)
     {
         const sLight* light = object->GetLight();
-        _position = cVector4(object->GetTransform()->_position, 0.0f);
-        _color = cVector4(light->_color, 0.0f);
-        _directionAndScale = cVector4(light->_direction, light->_scale);
+        // TODO: Overload constructors for cVector4
+        //_position = cVector4(object->GetTransform()->_position, 0.0f);
+        //_color = cVector4(light->_color, 0.0f);
+        //_directionAndScale = cVector4(light->_direction, light->_scale);
         _attenuation = cVector4(
             light->_attenuationConstant,
             light->_attenuationLinear,
@@ -72,8 +74,8 @@ namespace triton
 
     void cRenderPass::ResizeViewport(const glm::vec2& size)
     {
-        _desc->viewport[2] = size.x;
-        _desc->viewport[3] = size.y;
+        _desc->viewport.rect.SetZ(size.x);
+        _desc->viewport.rect.SetZ(size.y);
     }
 
     void cRenderPass::ResizeColorAttachments(const glm::vec2& size)
@@ -111,7 +113,6 @@ namespace triton
         const sCapabilities* caps = app->GetCapabilities();
         const cVector2 windowSize = app->GetWindow()->GetSize();
 
-        _materialsCPU = _context->Create<cIdVector<cMaterial>>(_context, caps->maxRenderMaterialCount);
         _maxOpaqueInstanceBufferByteSize = caps->maxRenderOpaqueInstanceCount * sizeof(sRenderInstance);
         _maxTransparentInstanceBufferByteSize = caps->maxRenderTransparentInstanceCount * sizeof(sRenderInstance);
         _maxTextInstanceBufferByteSize = caps->maxRenderTextInstanceCount * sizeof(sRenderInstance);
@@ -179,7 +180,8 @@ namespace triton
         opaqueRenderPassDesc.shaderRenderPath = eCategory::RENDER_PATH_OPAQUE;
         opaqueRenderPassDesc.shaderVertexPath = "C:/DDD/RealWare/out/build/x64-Debug/samples/Sample01/data/shaders/main_vertex.shader";
         opaqueRenderPassDesc.shaderFragmentPath = "C:/DDD/RealWare/out/build/x64-Debug/samples/Sample01/data/shaders/main_fragment.shader";
-        opaqueRenderPassDesc.viewport = cVector4(0.0f, 0.0f, windowSize);
+        // TODO: Overload constructors for cVector4
+        //opaqueRenderPassDesc.viewport = cVector4(0.0f, 0.0f, windowSize);
         opaqueRenderPassDesc.depthMode.useDepthTest = K_TRUE;
         opaqueRenderPassDesc.depthMode.useDepthWrite = K_TRUE;
         opaqueRenderPassDesc.blendMode.factorCount = 1;
@@ -199,7 +201,8 @@ namespace triton
         transparentRenderPassDesc.shaderRenderPath = eCategory::RENDER_PATH_TRANSPARENT;
         transparentRenderPassDesc.shaderVertexPath = "C:/DDD/RealWare/out/build/x64-Debug/samples/Sample01/data/shaders/main_vertex.shader";
         transparentRenderPassDesc.shaderFragmentPath = "C:/DDD/RealWare/out/build/x64-Debug/samples/Sample01/data/shaders/main_fragment.shader";
-        transparentRenderPassDesc.viewport = cVector4(0.0f, 0.0f, windowSize);
+        // TODO: Overload constructors for cVector4
+        //transparentRenderPassDesc.viewport = cVector4(0.0f, 0.0f, windowSize);
         transparentRenderPassDesc.depthMode.useDepthTest = K_TRUE;
         transparentRenderPassDesc.depthMode.useDepthWrite = K_FALSE;
         transparentRenderPassDesc.blendMode.factorCount = 2;
@@ -217,7 +220,8 @@ namespace triton
         textRenderPassDesc.shaderRenderPath = eCategory::RENDER_PATH_TEXT;
         textRenderPassDesc.shaderVertexPath = "C:/DDD/RealWare/out/build/x64-Debug/samples/Sample01/data/shaders/main_vertex.shader";
         textRenderPassDesc.shaderFragmentPath = "C:/DDD/RealWare/out/build/x64-Debug/samples/Sample01/data/shaders/main_fragment.shader";
-        textRenderPassDesc.viewport = cVector4(0.0f, 0.0f, windowSize);
+        // TODO: Overload constructors for cVector4
+        //textRenderPassDesc.viewport = cVector4(0.0f, 0.0f, windowSize);
         textRenderPassDesc.depthMode.useDepthTest = K_FALSE;
         textRenderPassDesc.depthMode.useDepthWrite = K_FALSE;
         _text = CreateRenderPass(&textRenderPassDesc);
@@ -233,7 +237,8 @@ namespace triton
         compositeTransparentRenderPassDesc.shaderRenderPath = eCategory::RENDER_PATH_TRANSPARENT_COMPOSITE;
         compositeTransparentRenderPassDesc.shaderVertexPath = "C:/DDD/RealWare/out/build/x64-Debug/samples/Sample01/data/shaders/main_vertex.shader";
         compositeTransparentRenderPassDesc.shaderFragmentPath = "C:/DDD/RealWare/out/build/x64-Debug/samples/Sample01/data/shaders/main_fragment.shader";
-        compositeTransparentRenderPassDesc.viewport = cVector4(0.0f, 0.0f, windowSize);
+        // TODO: Overload constructors for cVector4
+        //compositeTransparentRenderPassDesc.viewport = cVector4(0.0f, 0.0f, windowSize);
         compositeTransparentRenderPassDesc.depthMode.useDepthTest = K_FALSE;
         compositeTransparentRenderPassDesc.depthMode.useDepthWrite = K_FALSE;
         compositeTransparentRenderPassDesc.blendMode.factorCount = 1;
@@ -250,7 +255,8 @@ namespace triton
         compositeFinalRenderPassDesc.shaderRenderPath = eCategory::RENDER_PATH_QUAD;
         compositeFinalRenderPassDesc.shaderVertexPath = "C:/DDD/RealWare/out/build/x64-Debug/samples/Sample01/data/shaders/main_vertex.shader";
         compositeFinalRenderPassDesc.shaderFragmentPath = "C:/DDD/RealWare/out/build/x64-Debug/samples/Sample01/data/shaders/main_fragment.shader";
-        compositeFinalRenderPassDesc.viewport = cVector4(0.0f, 0.0f, windowSize);
+        // TODO: Overload constructors for cVector4
+        //compositeFinalRenderPassDesc.viewport = cVector4(0.0f, 0.0f, windowSize);
         compositeFinalRenderPassDesc.depthMode.useDepthTest = K_FALSE;
         compositeFinalRenderPassDesc.depthMode.useDepthWrite = K_FALSE;
         compositeFinalRenderPassDesc.blendMode.factorCount = 1;
@@ -303,11 +309,10 @@ namespace triton
         gfx->DestroyBuffer(_opaqueInstanceBuffer);
         gfx->DestroyBuffer(_indexBuffer);
         gfx->DestroyBuffer(_vertexBuffer);
-
-        _context->Destroy<cCache<cMaterial>>(_materialsCPU);
     }
 
-    cCacheObject<cMaterial> cGraphics::CreateMaterial(const std::string& id, cTextureAtlasTexture* diffuseTexture, const glm::vec4& diffuseColor, const glm::vec4& highlightColor, eCategory customShaderRenderPath, const std::string& customVertexFuncPath, const std::string& customFragmentFuncPath)
+    // TODO: Remove material creation from cGraphics
+    /*cCacheObject<cMaterial> cGraphics::CreateMaterial(const std::string& id, cTextureAtlasTexture* diffuseTexture, const glm::vec4& diffuseColor, const glm::vec4& highlightColor, eCategory customShaderRenderPath, const std::string& customVertexFuncPath, const std::string& customFragmentFuncPath)
     {
         cShader* customShader = nullptr;
         if (customVertexFuncPath != "" || customFragmentFuncPath != "")
@@ -323,7 +328,7 @@ namespace triton
         }
 
         return _materialsCPU->Create(id, diffuseTexture, diffuseColor, highlightColor, customShader);
-    }
+    }*/
 
     cVertexArray* cGraphics::CreateDefaultVertexArray()
     {
@@ -446,7 +451,8 @@ namespace triton
         return primitiveObject;
     }
 
-    sModel* cGraphics::CreateModel(const std::string& filename)
+    // TODO: Remove model creation from cGraphics
+    /*sModel* cGraphics::CreateModel(const std::string& filename)
     {
         cMemoryAllocator* memoryAllocator = _context->GetMemoryAllocator();
         const sCapabilities* caps = _context->GetSubsystem<cEngine>()->GetApplication()->GetCapabilities();
@@ -504,14 +510,16 @@ namespace triton
         model->_indicesByteSize = totalIndexCount * sizeof(index);
 
         return model;
-    }
+    }*/
 
-    cCacheObject<cMaterial> cGraphics::FindMaterial(const cTag& id)
+    // TODO: Remove material finding from cGraphics
+    /*cCacheObject<cMaterial> cGraphics::FindMaterial(const cTag& id)
     {
         return _materialsCPU->Find(id);
-    }
+    }*/
 
-    void cGraphics::DestroyMaterial(const cTag& id)
+    // TODO: Remove material destroying from cGraphics
+    /*void cGraphics::DestroyMaterial(const cTag& id)
     {
         cCacheObject<cMaterial> material = _materialsCPU->Find(id);
         cMaterial* matObj = material.object;
@@ -522,7 +530,7 @@ namespace triton
             _gfx->DestroyShader(matObj->GetCustomShader());
 
         _materialsCPU->Destroy(id);
-    }
+    }*/
 
     void cGraphics::DestroyGeometry(sVertexBufferGeometry* geometry)
     {
@@ -647,7 +655,8 @@ namespace triton
         _context->WriteBuffer(_lightBuffer, 0, _lightsByteSize, _lights);*/
     }
 
-    void cGraphics::WriteObjectsToOpaqueBuffers(cIdVector<cGameObject>& objects, cRenderPass* renderPass)
+    // TODO: Implement new CPU->GPU geometry buffer communication
+    /*void cGraphics::WriteObjectsToOpaqueBuffers(cIdVector<cGameObject>& objects, cRenderPass* renderPass)
     {
         _opaqueInstanceCount = 0;
         _opaqueInstancesByteSize = 0;
@@ -790,7 +799,7 @@ namespace triton
         _gfx->WriteBuffer(_transparentInstanceBuffer, 0, _transparentInstancesByteSize, _transparentInstances);
         _gfx->WriteBuffer(_transparentMaterialBuffer, 0, _transparentMaterialsByteSize, _transparentMaterials);
         _gfx->WriteBuffer(_transparentTextureAtlasTexturesBuffer, 0, _transparentTextureAtlasTexturesByteSize, _transparentTextureAtlasTextures);
-    }
+    }*/
 
     void cGraphics::DrawGeometryOpaque(const sVertexBufferGeometry* geometry, const cGameObject* cameraObject, cRenderPass* renderPass)
     {
@@ -884,7 +893,8 @@ namespace triton
         _gfx->UnbindRenderPass(_transparent);
     }
 
-    void cGraphics::DrawTexts(const std::vector<cGameObject>& objects)
+    // TODO: Implement new text drawing approach
+    /*void cGraphics::DrawTexts(const std::vector<cGameObject>& objects)
     {
         for (auto& it : objects)
         {
@@ -969,7 +979,7 @@ namespace triton
             _gfx->DrawQuads(actualCharCount);
             _gfx->UnbindRenderPass(_text);
         }
-    }
+    }*/
 
     void cGraphics::CompositeTransparent()
     {
