@@ -14,7 +14,8 @@ using namespace types;
 
 namespace triton
 {
-    cTextureAtlasTexture::cTextureAtlasTexture(cContext* context, types::boolean isNormalized, const glm::vec3& offset, const glm::vec2& size, cTexture* atlas = nullptr) : iObject(context), _isNormalized(isNormalized)
+    cTextureAtlasTexture::cTextureAtlasTexture(cContext* context, types::boolean isNormalized, const glm::vec3& offset, const glm::vec2& size, cTexture* atlas)
+        : iObject(context), _isNormalized(isNormalized)
     {
         if (isNormalized == K_TRUE)
         {
