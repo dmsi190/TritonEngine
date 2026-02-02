@@ -17,8 +17,10 @@ namespace triton
 	class cHashTable;
 
 	template <typename TKey, typename TValue>
-	class cHashTablePair : public cStackValue
+	class cHashTablePair : public iObject
 	{
+		TRITON_OBJECT(cHashTablePair)
+
 		friend class cHashTable<TKey, TValue>;
 
 		TKey key = {};
@@ -64,8 +66,8 @@ namespace triton
 
 		_allocatorDesc = allocatorDesc;
 		_elements = _context->Create<cStack<cHashTablePair<TKey, TValue>>>(_context, _allocatorDesc);
-		_hashTableSize = hashTableSize;
-		_hashMask = MakeHashMask(hashTableSize);
+		_hashTableSize = _allocatorDesc.hashTableSize;
+		_hashMask = MakeHashMask(_allocatorDesc.hashTableSize);
 		_hashTable = (cStackValue*)memoryAllocator->Allocate(_hashTableSize * sizeof(cStackValue), caps->memoryAlignment);
 	}
 
