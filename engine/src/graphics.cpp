@@ -154,7 +154,7 @@ namespace triton
         _opaqueTextureAtlasTexturesByteSize = 0;
         _transparentTextureAtlasTextures = memoryAllocator->Allocate(_maxTextureAtlasTexturesBufferByteSize, caps->memoryAlignment);
         _transparentTextureAtlasTexturesByteSize = 0;
-        _materialsMap = _context->Create<std::unordered_map<cMaterial*, s32>>();
+        _materialsMap = new std::unordered_map<cMaterial*, s32>(); // TODO: replace std::unordered_map with cHashTable
 
         cTexture* color = gfx->CreateTexture(windowSize.GetX(), windowSize.GetY(), 0, cTexture::eDimension::TEXTURE_2D, cTexture::eFormat::RGBA8, nullptr);
         cTexture* accumulation = gfx->CreateTexture(windowSize.GetX(), windowSize.GetY(), 0, cTexture::eDimension::TEXTURE_2D, cTexture::eFormat::RGBA16F, nullptr);
