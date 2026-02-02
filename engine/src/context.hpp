@@ -49,8 +49,8 @@ namespace triton
 	private:
 		cMemoryAllocator* _allocator = nullptr;
 		cStack<ecs::cScene>* _scenes = nullptr;
-		std::unordered_map<ClassType, std::shared_ptr<iObject>> _factories;
-		std::unordered_map<ClassType, std::shared_ptr<iObject>> _subsystems;
+		std::unordered_map<ClassType, iObject*> _factories;
+		std::unordered_map<ClassType, iObject*> _subsystems;
 	};
 
 	template <typename T, typename... Args>
@@ -90,7 +90,7 @@ namespace triton
 		const ClassType type = T::GetTypeStatic();
 		const auto it = _factories.find(type);
 		if (it == _factories.end())
-			_factories.insert({type, std::make_shared<iObject>(this)});
+			_factories.insert({type, new T(this)});
 	}
 
 	template <typename T>
