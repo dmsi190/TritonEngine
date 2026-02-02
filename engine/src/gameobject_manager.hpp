@@ -6,7 +6,6 @@
 #include <string>
 #include "../../thirdparty/glm/glm/glm.hpp"
 #include "category.hpp"
-#include "cache.hpp"
 #include "types.hpp"
 
 namespace triton
@@ -71,23 +70,5 @@ namespace triton
         sLight* _light = nullptr;
         cPhysicsActor* _actor = nullptr;
         cPhysicsController* _controller = nullptr;
-    };
-
-    class mGameObject : public iObject
-    {
-    public:
-        explicit mGameObject(cContext* context);
-        ~mGameObject() = default;
-
-        cGameObject* CreateGameObject(const std::string& id);
-        cGameObject* FindGameObject(const std::string& id);
-        void DestroyGameObject(const std::string& id);
-
-        inline cCache<cGameObject>& GetObjects() const { return _gameObjects; }
-
-    private:
-        types::usize _maxGameObjectCount = 0;
-        types::usize _gameObjectCount = 0;
-        mutable cCache<cGameObject> _gameObjects;
     };
 }
