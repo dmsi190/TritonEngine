@@ -1,3 +1,5 @@
+// tag.cpp
+
 #include "tag.hpp"
 
 using namespace types;
@@ -9,12 +11,12 @@ namespace triton
 		FillZeros();
 	}
 
-	cTag::cTag(const std::string& text) : cTag(context)
+	cTag::cTag(const std::string& text) : cTag()
 	{
 		CopyChars((const u8*)text.c_str(), text.size());
 	}
 
-	cTag::cTag(const u8* chars, usize charsByteSize) : cTag(context)
+	cTag::cTag(const u8* chars, usize charsByteSize) : cTag()
 	{
 		CopyChars(chars, charsByteSize);
 	}
