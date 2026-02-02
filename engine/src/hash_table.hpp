@@ -16,7 +16,7 @@ namespace triton
 	class cHashTable;
 
 	template <typename TKey, typename TValue>
-	class cHashTablePair
+	class cHashTablePair : public cStackValue
 	{
 		friend class cHashTable<TKey, TValue>;
 
