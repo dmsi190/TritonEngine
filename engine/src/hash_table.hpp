@@ -88,7 +88,8 @@ namespace triton
 		_context->Destroy<cStack<cHashTablePair<TKey, TValue>>>(_elements);
 	}
 
-	template <typename TKey, typename TValue>
+	// TODO: Figure out better way
+	/*template <typename TKey, typename TValue>
 	template <typename... Args>
 	TValue* cHashTable<TKey, TValue>::Insert(const TKey& key, Args&&... args)
 	{
@@ -104,7 +105,7 @@ namespace triton
 		HashPair(key, object);
 
 		return object;
-	}
+	}*/
 
 	template <typename TKey, typename TValue>
 	TValue* cHashTable<TKey, TValue>::Insert(const TKey& key, TValue&& value)
