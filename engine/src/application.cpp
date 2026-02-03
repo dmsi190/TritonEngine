@@ -116,7 +116,7 @@ namespace triton
     iApplication::iApplication(cContext* context, const sCapabilities* caps) : iObject(context), _caps(caps)
     {
         _engine = _context->Create<cEngine>(_context, this);
-        _window = _context->Create<cWindow>(_context, caps->windowTitle, caps->windowWidth, caps->windowHeight, caps->fullscreen);
+        //_window = _context->Create<cWindow>(_context, caps->windowTitle, caps->windowWidth, caps->windowHeight, caps->fullscreen);
     }
 
     iApplication::~iApplication()

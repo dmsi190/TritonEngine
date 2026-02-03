@@ -318,8 +318,45 @@ int main()
 
 #include <iostream>
 
+#include "capabilities.hpp"
+#include "context.hpp"
+#include "application.hpp"
+
+using namespace triton;
+using namespace types;
+
+class cMyApplication final : public iApplication
+{
+public:
+    cMyApplication(cContext* context, const sCapabilities* caps) : iApplication(context, caps)
+    {
+    }
+
+    virtual ~cMyApplication() override final
+    {
+    }
+
+    virtual void Setup() override final
+    {
+    }
+
+    virtual void Stop() override final
+    {
+    }
+};
+
 int main()
 {
+    sCapabilities caps = {};
+    caps.windowTitle = "My Test Application";
+    caps.windowWidth = 800;
+    caps.windowHeight = 600;
+    caps.fullscreen = K_FALSE;
+
+    cContext* context = new cContext();
+
+    cMyApplication* myApp = new cMyApplication(context, &caps);
+
     std::cout << "Hello!" << std::endl;
     
     return 0;
