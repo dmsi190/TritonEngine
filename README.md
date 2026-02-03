@@ -15,8 +15,8 @@ Inspired by Urho3D, Wicked Engine, HPL1 Engine, UE4.
 - OpenGL 4.3 rendering backend
 - OpenAL sound backend
 - Weighted blended order-independent transparency (WBOIT)
-- Single texture atlas
-- Custom shaders
+- Single atlas for textures
+- User-defined GLSL shaders
 
 # License
 MIT License
