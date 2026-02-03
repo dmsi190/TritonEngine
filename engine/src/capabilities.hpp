@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include "types.hpp"
+
 namespace triton
 {
     struct sCapabilities
