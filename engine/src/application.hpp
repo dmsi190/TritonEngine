@@ -59,7 +59,7 @@ namespace triton
         };
 
         explicit iApplication(cContext* context, const sCapabilities* caps);
-        virtual ~iApplication() override final;
+        virtual ~iApplication() override;
 
         virtual void Setup() = 0;
         virtual void Stop() = 0;
