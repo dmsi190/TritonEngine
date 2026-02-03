@@ -22,6 +22,8 @@ add_executable(
 #file(GLOB EXE_FILES ${CMAKE_SOURCE_DIR}/exe_files/*)
 #file(COPY ${EXE_FILES} DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
 
+target_include_directories(TritonSample01 PUBLIC ${CMAKE_SOURCE_DIR}/engine/src/)
+
 add_custom_command(
     TARGET
     TritonSample01
