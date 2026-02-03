@@ -116,7 +116,7 @@ namespace triton
 		if (pPair == nullptr)
 			return nullptr;
 
-		TValue* object = &pPair->value;
+		TValue* object = &pPair->_value;
 
 		HashPair(key, object);
 
