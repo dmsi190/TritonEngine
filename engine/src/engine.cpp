@@ -49,7 +49,6 @@ namespace triton
 		_context->RegisterSubsystem(new cFileSystem(_context));
 		_context->RegisterSubsystem(new cFont(_context));
 		_context->RegisterSubsystem(new cPhysics(_context));
-		_context->RegisterSubsystem(new cGameObject(_context));
 		_context->RegisterSubsystem(new cThread(_context));
 		_context->RegisterSubsystem(new cTime(_context));
 		_context->RegisterSubsystem(new cEventDispatcher(_context));

@@ -53,8 +53,8 @@ namespace triton
             cad.maxChunkCount = caps->hashTableMaxChunkCount;
             cad.hashTableSize = caps->hashTableSize;
 
-            listener = _context->Create<cStack<cEventHandler>>(_context, cad);
-            _listeners->Insert(type, listener);
+            cStack<cEventHandler> listener(_context, cad);
+            _listeners->Insert(type, std::move(listener));
         }
 
         listener->Push(_context, receiver, type, std::move(function));

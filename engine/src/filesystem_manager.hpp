@@ -3,12 +3,11 @@
 #pragma once
 
 #include "object.hpp"
+#include "buffer.hpp"
 #include "types.hpp"
 
 namespace triton
 {
-    class cDataBuffer;
-
     class cDataFile : public iObject
     {
         TRITON_OBJECT(cDataFile)
@@ -37,4 +36,12 @@ namespace triton
         cDataFile* CreateDataFile(const std::string& path, types::boolean isText);
         void DestroyDataFile(cDataFile* buffer);
     };
+
+    void* cDataFile::GetData() const
+    {
+        if (_data == nullptr)
+            return nullptr;
+        else
+            return _data->GetData();
+    }
 }

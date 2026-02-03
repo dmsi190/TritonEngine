@@ -46,11 +46,6 @@ namespace triton
         inputFile.read((char*)&_data[0], byteSize);
     }
 
-    void* cDataFile::GetData() const
-    {
-        return _data->GetData();
-    }
-
     cFileSystem::cFileSystem(cContext* context) : iObject(context) {}
 
     cDataFile* cFileSystem::CreateDataFile(const std::string& path, types::boolean isText)
