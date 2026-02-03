@@ -22,7 +22,11 @@ using namespace types;
 
 namespace triton
 {
-	cEngine::cEngine(cContext* context, iApplication* app) : iObject(context), _app(app) {}
+	cEngine::cEngine(cContext* context, iApplication* app) : iObject(context), _app(app)
+	{
+		if (_app != nullptr)
+			_caps = _app->GetCapabilities();
+	}
 
 	void cEngine::Initialize()
 	{

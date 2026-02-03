@@ -10,6 +10,7 @@ namespace triton
 {
 	class cContext;
 	class iApplication;
+	struct sCapabilities;
 
 	class cEngine : public iObject
 	{
@@ -23,8 +24,10 @@ namespace triton
 		void Run();
 
 		inline iApplication* GetApplication() const { return _app; }
+		inline const sCapabilities* GetCapabilities() const { return _caps; }
 
 	private:
 		iApplication* _app = nullptr;
+		const sCapabilities* _caps = nullptr;
 	};
 }
